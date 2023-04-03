@@ -1,0 +1,8 @@
+
+
+GET https://www.marketwatch.com/investing/stock/csv/downloaddatapartial?startdate=02/27/2023%2000:00:00&enddate=03/29/2023%2023:59:59&daterange=d30&frequency=p1d&csvdownload=true&downloadpartial=false&newdates=false
+
+
+###
+GET https://www.marketwatch.com/investing/stock/aapl/downloaddatapartial?startdate=02/27/2023%2000:00:00&enddate=03/29/2023%2023:59:59&daterange=d30&frequency=p1d&csvdownload=true&downloadpartial=false&newdates=false
+
