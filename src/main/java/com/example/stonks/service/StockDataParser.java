@@ -1,8 +1,7 @@
 package com.example.stonks.service;
 
-import com.example.stonks.dto.ResultFrequency;
+import com.example.stonks.dto.NYSEResultFrequency;
 import com.example.stonks.dto.StockDataDTO;
-import com.example.stonks.dto.wrapper.StockDataWrapper;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -10,21 +9,22 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 @Component
-public class StockDataParser implements Parser<StockDataDTO, StockDataWrapper> {
+public class StockDataParser implements Parser<StockDataDTO, StockDataWrap> {
 
     private static final DateTimeFormatter DATE_FORMAT =
             DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH);
 
     @Override
-    public List<StockDataDTO> parse(StockDataWrapper wrapper) {
+    public List<StockDataDTO> parse(StockDataWrap wrapper) {
         List<StockDataDTO> stockDataList = new ArrayList<>();
         String company = wrapper.company();
-        ResultFrequency resultFrequency = wrapper.resultFrequency();
+        NYSEResultFrequency resultFrequency = wrapper.resultFrequency();
         String csvData = wrapper.source();
         String[] rows = csvData.split("\n");
         if (isIncorrectHeader(rows[0])) {
@@ -32,8 +32,9 @@ public class StockDataParser implements Parser<StockDataDTO, StockDataWrapper> {
         }
         try {
             for (int i = 1; i < rows.length; i++) {
-                String[] values = rows[i].split(",");
-                String volume = squashVolumeValues(values);
+                String[] values = Arrays.stream(rows[i].split(",\""))
+                        .map(value -> value.replace("\"", ""))
+                        .toArray(String[]::new);
                 StockDataDTO stockData = StockDataDTO.builder()
                         .companyCode(company)
                         .date(LocalDate.parse(values[0], DATE_FORMAT))
@@ -42,7 +43,7 @@ public class StockDataParser implements Parser<StockDataDTO, StockDataWrapper> {
                         .minPrice(BigDecimal.valueOf(Double.parseDouble(values[3])))
                         .endPrice(BigDecimal.valueOf(Double.parseDouble(values[4])))
                         .resultFrequency(resultFrequency)
-                        .volume(parseVolume(volume))
+                        .volume(parseVolume(values[5]))
                         .build();
                 stockDataList.add(stockData);
             }

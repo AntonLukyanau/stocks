@@ -1,6 +1,6 @@
 package com.example.stonks.entity;
 
-import com.example.stonks.dto.ResultFrequency;
+import com.example.stonks.dto.NYSEResultFrequency;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,6 +8,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -30,11 +32,12 @@ public class StockData {
     @Column(name = "id")
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "request_id")
+    private RequestToNYSE request;
+
     @Column(name = "company_code")
     private String companyCode; //for example aapl
-
-    @Column(name = "company_name")
-    private String companyName; //for example Apple Inc.
 
     @Column(name = "at_date")
     private LocalDate date;
@@ -53,7 +56,7 @@ public class StockData {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "result_frequency")
-    private ResultFrequency resultFrequency;
+    private NYSEResultFrequency resultFrequency;
 
     @Column(name = "volume")
     private Long volume;

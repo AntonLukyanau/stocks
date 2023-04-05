@@ -19,7 +19,7 @@ public class StockDataDTO {
     private BigDecimal maxPrice;
     private BigDecimal minPrice;
     private BigDecimal endPrice;
-    private ResultFrequency resultFrequency;
+    private NYSEResultFrequency resultFrequency;
     private Long volume;
 
 }

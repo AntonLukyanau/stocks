@@ -1,8 +1,7 @@
 package com.example.stonks.service;
 
-import com.example.stonks.dto.ResultFrequency;
+import com.example.stonks.dto.NYSEResultFrequency;
 import com.example.stonks.dto.StockDataDTO;
-import com.example.stonks.dto.wrapper.StockDataWrapper;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -21,9 +20,9 @@ class StockDataParserTest {
         // Given
         String csvData = """
                 Invalid Header
-                04/01/2023,100.0,110.0,90.0,105.0,100000
+                04/01/2023,"100.0","110.0","90.0","105.0","100000"
                 """;
-        StockDataWrapper wrapper = new StockDataWrapper(csvData, "ABC", ResultFrequency.DAILY);
+        StockDataWrap wrapper = new StockDataWrap(csvData, "ABC", NYSEResultFrequency.DAILY);
 
         // When
         List<StockDataDTO> stockDataList = parser.parse(wrapper);
@@ -39,7 +38,7 @@ class StockDataParserTest {
                 Date,Open,High,Low,Close,Volume
                 04/01/2023,invalid,110.0,90.0,105.0,100000
                 """;
-        StockDataWrapper wrapper = new StockDataWrapper(csvData, "ABC", ResultFrequency.DAILY);
+        StockDataWrap wrapper = new StockDataWrap(csvData, "ABC", NYSEResultFrequency.DAILY);
 
         // When
         List<StockDataDTO> stockDataList = parser.parse(wrapper);
@@ -53,9 +52,9 @@ class StockDataParserTest {
         // Given
         String csvData = """
                 Date,Open,High,Low,Close,Volume
-                04/01/2023,100.0,110.0,90.0,105.0,100000
+                04/01/2023,"100.0","110.0","90.0","105.0","100000"
                 """;
-        StockDataWrapper wrapper = new StockDataWrapper(csvData, "ABC", ResultFrequency.DAILY);
+        StockDataWrap wrapper = new StockDataWrap(csvData, "ABC", NYSEResultFrequency.DAILY);
 
         // When
         List<StockDataDTO> stockDataList = parser.parse(wrapper);
@@ -77,9 +76,9 @@ class StockDataParserTest {
         // Given
         String csvData = """
                 Date,Open,High,Low,Close,Volume
-                04/01/2023,100.0,110.0,90.0,105.0,1,000,000
+                04/01/2023,"100.0","110.0","90.0","105.0","1,000,000"
                 """;
-        StockDataWrapper wrapper = new StockDataWrapper(csvData, "ABC", ResultFrequency.DAILY);
+        StockDataWrap wrapper = new StockDataWrap(csvData, "ABC", NYSEResultFrequency.DAILY);
 
         // When
         List<StockDataDTO> stockDataList = parser.parse(wrapper);
@@ -95,10 +94,10 @@ class StockDataParserTest {
         // Given
         String csvData = """
                 Date,Open,High,Low,Close,Volume
-                04/01/2023,100.0,110.0,90.0,105.0,100000
-                04/02/2023,105.0,115.0,95.0,100.0,150000
+                04/01/2023,"100.0","110.0","90.0","105.0","100,000"
+                04/02/2023,"105.0","115.0","95.0","100.0","150,000"
                 """;
-        StockDataWrapper wrapper = new StockDataWrapper(csvData, "ABC", ResultFrequency.CUSTOM);
+        StockDataWrap wrapper = new StockDataWrap(csvData, "ABC", NYSEResultFrequency.DAILY);
         // When
         List<StockDataDTO> stockDataList = parser.parse(wrapper);
 
