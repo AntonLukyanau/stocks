@@ -2,6 +2,7 @@ package com.example.stonks.service;
 
 import com.example.stonks.dto.NYSEResultFrequency;
 import com.example.stonks.dto.StockDataDTO;
+import com.example.stonks.util.StockDataWrap;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

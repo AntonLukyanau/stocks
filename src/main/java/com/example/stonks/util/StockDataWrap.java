@@ -1,4 +1,4 @@
-package com.example.stonks.service;
+package com.example.stonks.util;
 
 import com.example.stonks.dto.NYSEResultFrequency;
 

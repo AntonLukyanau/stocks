@@ -16,32 +16,39 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CSVDataRetriever implements DataRetriever<String> {
 
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
     private final WorkDaysResolver workDaysResolver;
+    private final RestTemplate restTemplate;
 
     @Override
     public String retrieveData(Map<String, Object> parameters) {
-        String companyCode = String.valueOf(parameters.get(NYSEConstants.COMPANY_PARAMETER));
-        String frequency = String.valueOf(parameters.get(NYSEConstants.FREQUENCY_PARAMETER));
-        LocalDate startDate = (LocalDate) parameters.get(NYSEConstants.START_DATE);
-        LocalDate endDate = (LocalDate) parameters.get(NYSEConstants.END_DATE);
-        if (endDate == null) {
-            endDate = LocalDate.now();
+        Object companyCode = parameters.get(NYSEConstants.COMPANY_PARAMETER);
+        Object frequency = parameters.get(NYSEConstants.FREQUENCY_PARAMETER);
+        if (companyCode == null || frequency == null) {
+            return "";
         }
-        if (startDate == null) {
-            startDate = workDaysResolver.resolveLastWorkDayBefore(endDate);
+        Object startParam = parameters.get(NYSEConstants.START_DATE);
+        Object endParam = parameters.get(NYSEConstants.END_DATE);
+        LocalDate startDate;
+        LocalDate endDate;
+        if (startParam == null || endParam == null) {
+            startDate = LocalDate.now();
+            endDate = workDaysResolver.resolveLastWorkDayBefore(startDate);
+        } else {
+            startDate = LocalDate.parse(String.valueOf(startParam), FORMATTER);
+            endDate = LocalDate.parse(String.valueOf(endParam), FORMATTER);
         }
-        return requestCSVData(companyCode, frequency, startDate, endDate);
+        return doRequestCSVData(String.valueOf(companyCode), String.valueOf(frequency), startDate, endDate);
     }
 
-    private String requestCSVData(String companyCode, String frequency, LocalDate startDate, LocalDate endDate) {
-        RestTemplate restTemplate = new RestTemplate();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    private String doRequestCSVData(String companyCode, String frequency, LocalDate startDate, LocalDate endDate) {
         ResponseEntity<String> response = restTemplate.getForEntity(
                 NYSEConstants.URL_TEMPLATE,
                 String.class,
                 companyCode,
-                startDate.format(formatter),
-                endDate.format(formatter),
+                startDate.format(FORMATTER),
+                endDate.format(FORMATTER),
                 (Period.between(endDate, startDate).getDays()),
                 frequency);
         return response.getBody();
