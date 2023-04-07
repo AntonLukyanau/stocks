@@ -1,10 +1,15 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/stock_db
+    url: ${local.database.url:jdbc:postgresql://localhost:5432/postgres}
+    username: ${local.database.username:postgres}
+    password: ${local.database.password:postgres}
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 stock:
-  companies:
-    - aapl
-    - epam
-    - msft
-    - ibm
+  companies: aapl, epam, msft, ibm
+daily:
+  fetch:
+    retries: 5
