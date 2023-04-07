@@ -2,6 +2,7 @@ package com.example.stonks.service;
 
 import com.example.stonks.dto.NYSEResultFrequency;
 import com.example.stonks.dto.StockDataDTO;
+import com.example.stonks.util.StockDataWrap;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -51,14 +52,6 @@ public class StockDataParser implements Parser<StockDataDTO, StockDataWrap> {
             return Collections.emptyList();
         }
         return stockDataList;
-    }
-
-    private static String squashVolumeValues(String[] values) {
-        StringBuilder volume = new StringBuilder(values[5]);
-        for (int j = 6; j < values.length; j++) {
-            volume.append(",").append(values[j]);
-        }
-        return volume.toString();
     }
 
     private long parseVolume(String volumeString) {
