@@ -6,6 +6,7 @@ import com.example.stonks.entity.StockData;
 import com.example.stonks.repository.StockRepository;
 import com.example.stonks.service.rest.DataRetriever;
 import com.example.stonks.util.NYSEConstants;
+import com.example.stonks.util.StockDataWrap;
 import com.example.stonks.validator.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -29,13 +30,20 @@ public class StockDataRetrievalProcessor implements DataRetrievalProcessor<List<
 
     @Override
     public List<StockDataDTO> retrievalProcess(Map<String, Object> parameters) {
+        Object companyParam = parameters.get(NYSEConstants.COMPANY_PARAMETER);
+        Object frequencyParam = parameters.get(NYSEConstants.FREQUENCY_PARAMETER);
+        if (companyParam == null || frequencyParam == null) {
+            log.warn("Invoke retrieval process with missing parameters. Parameters: " + parameters);
+            return Collections.emptyList();
+        }
+        String companyCode = String.valueOf(companyParam);
+        NYSEResultFrequency frequency = (NYSEResultFrequency) frequencyParam;
         String data = stockDataRetriever.retrieveData(parameters);
         if (!csvValidator.validate(data)) {
             log.warn("Retrieve data from NYSE was failed. Parameters: " + parameters);
             return Collections.emptyList();
         }
-        String companyCode = String.valueOf(parameters.get(NYSEConstants.COMPANY_PARAMETER));
-        NYSEResultFrequency frequency = (NYSEResultFrequency) parameters.get(NYSEConstants.FREQUENCY_PARAMETER);
+
         StockDataWrap dataWrapper = new StockDataWrap(data, companyCode, frequency);
         List<StockDataDTO> stockDataDTOS = stockDataParser.parse(dataWrapper);
         if (stockDataDTOS.isEmpty()) {

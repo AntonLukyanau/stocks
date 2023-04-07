@@ -103,7 +103,6 @@ public class StockDataRetrievalProcessorTest {
         parameters.put(NYSEConstants.COMPANY_PARAMETER, "aapl");
         parameters.put(NYSEConstants.FREQUENCY_PARAMETER, NYSEResultFrequency.DAILY);
 
-        StockDataWrap dataWrapper = new StockDataWrap(invalidData, "aapl", NYSEResultFrequency.DAILY);
         when(stockDataRetriever.retrieveData(parameters)).thenReturn(invalidData);
         when(csvValidator.validate(invalidData)).thenReturn(false);
 
