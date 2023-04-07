@@ -9,6 +9,9 @@ public class CSVValidator implements Validator<String> {
 
     @Override
     public boolean validate(String data) {
+        if (data == null || data.isBlank()) {
+            return false;
+        }
         Scanner scanner = new Scanner(data);
         String header = scanner.nextLine();
         if (!scanner.hasNextLine() || !headerIsValid(header)) {
