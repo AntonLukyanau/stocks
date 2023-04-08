@@ -32,8 +32,8 @@ public class CSVDataRetriever implements DataRetriever<String> {
         LocalDate startDate = parameters.startDate();
         LocalDate endDate = parameters.endDate();
         if (startDate == null || endDate == null) {
-            startDate = LocalDate.now();
-            endDate = workDaysResolver.resolveLastWorkDayBefore(startDate);
+            startDate = workDaysResolver.resolveLastWorkDayBefore(startDate);
+            endDate = LocalDate.now();
         }
         return doRequestCSVData(companyCode, frequency.getUrlParameterValue(), startDate, endDate);
     }
