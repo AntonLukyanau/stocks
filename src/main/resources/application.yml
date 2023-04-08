@@ -10,9 +10,6 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 stock:
   companies: aapl, epam, msft, ibm
-daily:
-  fetch:
-    retries: 5
 stonks:
   request:
     cache:
