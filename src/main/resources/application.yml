@@ -13,3 +13,7 @@ stock:
 daily:
   fetch:
     retries: 5
+stonks:
+  request:
+    cache:
+      size: 10000

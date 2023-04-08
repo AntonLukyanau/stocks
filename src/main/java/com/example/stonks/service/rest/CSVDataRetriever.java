@@ -1,7 +1,6 @@
 package com.example.stonks.service.rest;
 
 import com.example.stonks.dto.NYSEResultFrequency;
-import com.example.stonks.service.WorkDaysResolver;
 import com.example.stonks.util.NYSEConstants;
 import com.example.stonks.util.RequestParameters;
 import lombok.RequiredArgsConstructor;
@@ -19,22 +18,17 @@ public class CSVDataRetriever implements DataRetriever<String> {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
-    private final WorkDaysResolver workDaysResolver;
     private final RestTemplate restTemplate;
 
     @Override
     public String retrieveData(RequestParameters parameters) {
-        String companyCode = parameters.companyName();
-        NYSEResultFrequency frequency = parameters.frequency();
-        if (companyCode == null || frequency == null) {
+        if (parameters.isContainsNull()) {
             return "";
         }
+        String companyCode = parameters.companyName();
+        NYSEResultFrequency frequency = parameters.frequency();
         LocalDate startDate = parameters.startDate();
         LocalDate endDate = parameters.endDate();
-        if (startDate == null || endDate == null) {
-            startDate = workDaysResolver.resolveLastWorkDayBefore(startDate);
-            endDate = LocalDate.now();
-        }
         return doRequestCSVData(companyCode, frequency.getUrlParameterValue(), startDate, endDate);
     }
 

@@ -32,11 +32,12 @@ public class StockDataRetrievalProcessor implements DataRetrievalProcessor<List<
 
     @Override
     public List<StockDataDTO> retrievalProcess(RequestParameters parameters) {
+        if (requestCache.containsKey(parameters)) {
+            return requestCache.getBy(parameters);
+        }
         String companyName = parameters.companyName();
         NYSEResultFrequency frequency = parameters.frequency();
-        LocalDate startDate = parameters.startDate();
-        LocalDate endDate = parameters.endDate();
-        if (companyName == null || frequency == null) {
+        if (parameters.isContainsNull()) {
             log.warn("Invoke retrieval process with missing parameters. Parameters: " + parameters);
             return Collections.emptyList();
         }
@@ -47,21 +48,26 @@ public class StockDataRetrievalProcessor implements DataRetrievalProcessor<List<
         if (stockDataDTOS.isEmpty()) {
             log.warn("Retrieve data from NYSE was failed. Parameters: " + parameters);
         } else {
-            List<StockData> stocks = stockDataDTOS.stream()
-                    .map(stockDataConverter::convert)
-                    .filter(Objects::nonNull)
-                    .toList();
-            RequestToNYSE request = RequestToNYSE.builder()
-                    .companyParameter(companyName)
-                    .frequencyParameter(frequency)
-                    .startDateParameter(startDate)
-                    .endDateParameter(endDate)
-                    .date(LocalDate.now())
-                    .stocks(stocks)
-                    .build();
-            requestRepository.save(request);
+            saveRequestResults(parameters, stockDataDTOS);
         }
         return stockDataDTOS;
+    }
+
+    private void saveRequestResults(RequestParameters parameters, List<StockDataDTO> stockDataDTOS) {
+        List<StockData> stocks = stockDataDTOS.stream()
+                .map(stockDataConverter::convert)
+                .filter(Objects::nonNull)
+                .toList();
+        RequestToNYSE request = RequestToNYSE.builder()
+                .companyParameter(parameters.companyName())
+                .frequencyParameter(parameters.frequency())
+                .startDateParameter(parameters.startDate())
+                .endDateParameter(parameters.endDate())
+                .date(LocalDate.now())
+                .stocks(stocks)
+                .build();
+        requestRepository.save(request);
+        requestCache.store(parameters, List.copyOf(stockDataDTOS));
     }
 
 }

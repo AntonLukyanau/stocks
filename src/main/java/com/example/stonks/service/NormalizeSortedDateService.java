@@ -9,16 +9,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class NormalizeSortedDateService implements NormalizeDateService {
 
+    private final WorkDaysResolver workDaysResolver;
     private final DataRetrievalProcessor<List<StockDataDTO>> stockDataRetrievalProcessor;
     private final Converter<StockDataDTO, StockNormalizedDTO> stockNormalizeDTOConverter;
 
@@ -34,20 +35,17 @@ public class NormalizeSortedDateService implements NormalizeDateService {
     private List<StockNormalizedDTO> convertToNormalizedSortedData(List<StockDataDTO> stockDataDTOS) {
         return stockDataDTOS.stream()
                 .map(stockNormalizeDTOConverter::convert)
-                .sorted(Comparator.comparing((StockNormalizedDTO stockNormalizedDTO) ->
-                                stockNormalizedDTO != null ? stockNormalizedDTO.getNormalizedValue()
-                                        : BigDecimal.ZERO)
-                        .reversed())
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparing(StockNormalizedDTO::getNormalizedValue).reversed())
                 .toList();
     }
 
-    private RequestParameters fillParameters(
-            String companyCode, String start, String end) {
-        return new RequestParameters(
-                companyCode,
-                NYSEResultFrequency.DAILY,
-                LocalDate.parse(start, NYSEConstants.DATE_FORMAT),
-                LocalDate.parse(end, NYSEConstants.DATE_FORMAT));
+    private RequestParameters fillParameters(String companyCode, String start, String end) {
+        LocalDate endDate = end == null || end.isBlank() ? LocalDate.now()
+                : LocalDate.parse(end, NYSEConstants.DATE_FORMAT);
+        LocalDate startDate = start == null || start.isBlank() ? workDaysResolver.resolveLastWorkDayBefore(endDate)
+                : LocalDate.parse(start, NYSEConstants.DATE_FORMAT);
+        return new RequestParameters(companyCode, NYSEResultFrequency.DAILY, startDate, endDate);
     }
 
 }
