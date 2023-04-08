@@ -3,11 +3,10 @@ package com.example.stonks.service;
 import com.example.stonks.dto.NYSEResultFrequency;
 import com.example.stonks.dto.StockDataDTO;
 import com.example.stonks.entity.StockData;
-import com.example.stonks.repository.StockRepository;
+import com.example.stonks.repository.RequestToNYSERepository;
 import com.example.stonks.service.rest.DataRetriever;
-import com.example.stonks.util.NYSEConstants;
+import com.example.stonks.util.RequestParameters;
 import com.example.stonks.util.StockDataWrap;
-import com.example.stonks.validator.Validator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,9 +17,7 @@ import org.springframework.core.convert.converter.Converter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -34,17 +31,15 @@ public class StockDataRetrievalProcessorTest {
     @Mock
     private DataRetriever<String> stockDataRetriever;
 
-    @Mock
-    private Validator<String> csvValidator;
 
     @Mock
     private Converter<StockDataDTO, StockData> stockDataConverter;
 
     @Mock
-    private StockRepository stockRepository;
+    private RequestToNYSERepository requestRepository;
 
     @InjectMocks
-    private StockDataRetrievalProcessor processor;
+    private StockDataRetrievalProcessor retrievalProcessor;
 
     @Test
     public void testRetrievalProcessSuccess() {
@@ -53,9 +48,8 @@ public class StockDataRetrievalProcessorTest {
                 Date,Open,High,Low,Close,Volume
                 01/01/2022,"150.0","200.0","100.0","180.0","50,000"
                 """;
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put(NYSEConstants.COMPANY_PARAMETER, "aapl");
-        parameters.put(NYSEConstants.FREQUENCY_PARAMETER, NYSEResultFrequency.DAILY);
+        RequestParameters parameters = new RequestParameters(
+                "aapl", NYSEResultFrequency.DAILY, null, null);
 
         StockDataWrap dataWrapper = new StockDataWrap(validData, "aapl", NYSEResultFrequency.DAILY);
         List<StockDataDTO> expectedStockDataDTOS = List.of(
@@ -79,19 +73,17 @@ public class StockDataRetrievalProcessorTest {
                 .volume(50000L)
                 .build();
         when(stockDataRetriever.retrieveData(parameters)).thenReturn(validData);
-        when(csvValidator.validate(validData)).thenReturn(true);
         when(stockDataParser.parse(dataWrapper)).thenReturn(expectedStockDataDTOS);
         when(stockDataConverter.convert(any())).thenReturn(stockData);
 
         // when
-        List<StockDataDTO> actualStockDataDTOS = processor.retrievalProcess(parameters);
+        List<StockDataDTO> actualStockDataDTOS = retrievalProcessor.retrievalProcess(parameters);
 
         // then
         verify(stockDataRetriever).retrieveData(parameters);
-        verify(csvValidator).validate(validData);
         verify(stockDataParser).parse(dataWrapper);
         verify(stockDataConverter).convert(expectedStockDataDTOS.get(0));
-        verify(stockRepository).saveAll(Collections.singletonList(stockData));
+        verify(requestRepository).save(any());
         assertEquals(expectedStockDataDTOS, actualStockDataDTOS);
     }
 
@@ -99,22 +91,17 @@ public class StockDataRetrievalProcessorTest {
     public void testRetrievalProcessFailure() {
         // given
         String invalidData = "invalid,data,here";
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put(NYSEConstants.COMPANY_PARAMETER, "aapl");
-        parameters.put(NYSEConstants.FREQUENCY_PARAMETER, NYSEResultFrequency.DAILY);
-
-        when(stockDataRetriever.retrieveData(parameters)).thenReturn(invalidData);
-        when(csvValidator.validate(invalidData)).thenReturn(false);
+        RequestParameters parameters = new RequestParameters(
+                "aapl", NYSEResultFrequency.DAILY, null, null);
 
         // when
-        List<StockDataDTO> actualStockDataDTOS = processor.retrievalProcess(parameters);
+        when(stockDataRetriever.retrieveData(parameters)).thenReturn(invalidData);
+        List<StockDataDTO> actualStockDataDTOS = retrievalProcessor.retrievalProcess(parameters);
 
         // then
         verify(stockDataRetriever).retrieveData(parameters);
-        verify(csvValidator).validate(invalidData);
-        verifyNoInteractions(stockDataParser);
         verifyNoInteractions(stockDataConverter);
-        verifyNoInteractions(stockRepository);
+        verifyNoInteractions(requestRepository);
         assertTrue(actualStockDataDTOS.isEmpty());
     }
 
@@ -122,24 +109,21 @@ public class StockDataRetrievalProcessorTest {
     public void testRetrievalProcessEmptyData() {
         // given
         String emptyData = "";
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put(NYSEConstants.COMPANY_PARAMETER, "aapl");
-        parameters.put(NYSEConstants.FREQUENCY_PARAMETER, NYSEResultFrequency.DAILY);
+        RequestParameters parameters = new RequestParameters(
+                "aapl", NYSEResultFrequency.DAILY, null, null);
 
         StockDataWrap dataWrapper = new StockDataWrap(emptyData, "aapl", NYSEResultFrequency.DAILY);
         when(stockDataRetriever.retrieveData(parameters)).thenReturn(emptyData);
-        when(csvValidator.validate(emptyData)).thenReturn(true);
         when(stockDataParser.parse(dataWrapper)).thenReturn(Collections.emptyList());
 
         // when
-        List<StockDataDTO> actualStockDataDTOS = processor.retrievalProcess(parameters);
+        List<StockDataDTO> actualStockDataDTOS = retrievalProcessor.retrievalProcess(parameters);
 
         // then
         verify(stockDataRetriever).retrieveData(parameters);
-        verify(csvValidator).validate(emptyData);
         verify(stockDataParser).parse(dataWrapper);
         verifyNoInteractions(stockDataConverter);
-        verifyNoInteractions(stockRepository);
+        verifyNoInteractions(requestRepository);
         assertNotNull(actualStockDataDTOS);
         assertTrue(actualStockDataDTOS.isEmpty());
     }
@@ -147,13 +131,12 @@ public class StockDataRetrievalProcessorTest {
     @Test
     public void testRetrievalProcessMissingParameter() {
         // given
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put(NYSEConstants.COMPANY_PARAMETER, "aapl");
-
+        RequestParameters parameters = new RequestParameters(
+                "aapl", null, null, null);
         // when
-        List<StockDataDTO> stockDataDTOS = processor.retrievalProcess(parameters);
+        List<StockDataDTO> stockDataDTOS = retrievalProcessor.retrievalProcess(parameters);
         // then
         assertTrue(stockDataDTOS.isEmpty());
-        verifyNoInteractions(stockDataRetriever, csvValidator, stockDataParser, stockDataConverter, stockRepository);
+        verifyNoInteractions(stockDataRetriever, stockDataParser, stockDataConverter, requestRepository);
     }
 }

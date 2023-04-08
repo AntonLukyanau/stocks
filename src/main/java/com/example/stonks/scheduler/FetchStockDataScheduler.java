@@ -5,7 +5,7 @@ import com.example.stonks.dto.StockDataDTO;
 import com.example.stonks.entity.StockData;
 import com.example.stonks.repository.StockRepository;
 import com.example.stonks.service.DataRetrievalProcessor;
-import com.example.stonks.util.NYSEConstants;
+import com.example.stonks.util.RequestParameters;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +14,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -39,10 +38,8 @@ public class FetchStockDataScheduler {
     }
 
     private void doRequest(NYSEResultFrequency frequency, String companyCode) {
-        Map<String, Object> parameters = Map.of(
-                NYSEConstants.COMPANY_PARAMETER, companyCode,
-                NYSEConstants.FREQUENCY_PARAMETER, frequency
-        );
+        RequestParameters parameters = new RequestParameters(
+                companyCode, frequency, null, null);
         for (int attempt = 0; attempt < retries; attempt++) {
             List<StockDataDTO> stockDataDTOS = stockDataRetrievalProcessor.retrievalProcess(parameters);
             if (!stockDataDTOS.isEmpty()) {

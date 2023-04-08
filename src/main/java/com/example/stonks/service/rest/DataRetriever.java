@@ -1,9 +1,9 @@
 package com.example.stonks.service.rest;
 
-import java.util.Map;
+import com.example.stonks.util.RequestParameters;
 
 public interface DataRetriever<T> {
 
-    T retrieveData(Map<String, Object> parameters);
+    T retrieveData(RequestParameters parameters);
 
 }

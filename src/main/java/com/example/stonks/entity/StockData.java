@@ -14,7 +14,9 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -22,13 +24,15 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "stock_data")
 @Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class StockData {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stock_data_seq")
-    @SequenceGenerator(name = "stock_data_seq", sequenceName = "stock_data_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stock_data_id_seq")
+    @SequenceGenerator(name = "stock_data_id_seq", sequenceName = "stock_data_id_seq", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 

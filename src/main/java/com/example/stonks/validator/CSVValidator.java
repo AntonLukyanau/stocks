@@ -1,5 +1,6 @@
 package com.example.stonks.validator;
 
+import com.example.stonks.util.NYSEConstants;
 import org.springframework.stereotype.Service;
 
 import java.util.Scanner;
@@ -28,8 +29,7 @@ public class CSVValidator implements Validator<String> {
     }
 
     private boolean headerIsValid(String header) {
-        String[] fieldNames = header.split(",");
-        return fieldNames.length == 6;
+        return NYSEConstants.CSV_HEADER.equals(header);
     }
 
 }

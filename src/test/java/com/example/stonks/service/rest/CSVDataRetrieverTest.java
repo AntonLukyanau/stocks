@@ -2,7 +2,7 @@ package com.example.stonks.service.rest;
 
 import com.example.stonks.dto.NYSEResultFrequency;
 import com.example.stonks.service.WorkDaysResolver;
-import com.example.stonks.util.NYSEConstants;
+import com.example.stonks.util.RequestParameters;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,12 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CSVDataRetrieverTest {
@@ -30,13 +29,11 @@ class CSVDataRetrieverTest {
     @Mock
     private RestTemplate restTemplate;
 
-    //given
-    //when
-    //then
     @Test
     void testRetrieveDataWithMissingFrequencyParameter() {
         //given
-        Map<String, Object> parameters = Map.of(NYSEConstants.COMPANY_PARAMETER, "epam");
+        RequestParameters parameters = new RequestParameters(
+                "epam", null, null, null);
         //when
         String retrievedData = csvDataRetriever.retrieveData(parameters);
         //then
@@ -46,10 +43,8 @@ class CSVDataRetrieverTest {
     @Test
     void testRetrieveDataWithoutStartAndEndParameters() {
         //given
-        Map<String, Object> parameters = Map.of(
-                NYSEConstants.COMPANY_PARAMETER, "epam",
-                NYSEConstants.FREQUENCY_PARAMETER, NYSEResultFrequency.DAILY
-        );
+        RequestParameters parameters = new RequestParameters(
+                "epam", NYSEResultFrequency.DAILY, null, null);
         //when
         when(workDaysResolver.resolveLastWorkDayBefore(any())).thenReturn(LocalDate.now().minusDays(1));
         when(restTemplate.getForEntity(any(), any(), any(), any(), any(), any(), any()))

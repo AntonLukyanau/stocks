@@ -3,7 +3,12 @@ package com.example.stonks.service;
 import com.example.stonks.dto.NYSEResultFrequency;
 import com.example.stonks.dto.StockDataDTO;
 import com.example.stonks.util.StockDataWrap;
+import com.example.stonks.validator.CSVValidator;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,13 +16,20 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class StockDataParserTest {
 
-    private final StockDataParser parser = new StockDataParser();
+    @InjectMocks
+    private StockDataParser parser;
+
+    @Mock
+    private CSVValidator validator;
 
     @Test
-    void testParseReturnsEmptyListWhenHeaderIsIncorrect() {
+    void testParseReturnsEmptyListWhenHeaderIsInvalid() {
         // Given
         String csvData = """
                 Invalid Header
@@ -26,6 +38,7 @@ class StockDataParserTest {
         StockDataWrap wrapper = new StockDataWrap(csvData, "ABC", NYSEResultFrequency.DAILY);
 
         // When
+        when(validator.validate(any())).thenReturn(false);
         List<StockDataDTO> stockDataList = parser.parse(wrapper);
 
         // Then
@@ -42,6 +55,7 @@ class StockDataParserTest {
         StockDataWrap wrapper = new StockDataWrap(csvData, "ABC", NYSEResultFrequency.DAILY);
 
         // When
+        when(validator.validate(any())).thenReturn(false);
         List<StockDataDTO> stockDataList = parser.parse(wrapper);
 
         // Then
@@ -58,6 +72,7 @@ class StockDataParserTest {
         StockDataWrap wrapper = new StockDataWrap(csvData, "ABC", NYSEResultFrequency.DAILY);
 
         // When
+        when(validator.validate(any())).thenReturn(true);
         List<StockDataDTO> stockDataList = parser.parse(wrapper);
 
         // Then
@@ -82,6 +97,7 @@ class StockDataParserTest {
         StockDataWrap wrapper = new StockDataWrap(csvData, "ABC", NYSEResultFrequency.DAILY);
 
         // When
+        when(validator.validate(any())).thenReturn(true);
         List<StockDataDTO> stockDataList = parser.parse(wrapper);
 
         // Then
@@ -100,6 +116,7 @@ class StockDataParserTest {
                 """;
         StockDataWrap wrapper = new StockDataWrap(csvData, "ABC", NYSEResultFrequency.DAILY);
         // When
+        when(validator.validate(any())).thenReturn(true);
         List<StockDataDTO> stockDataList = parser.parse(wrapper);
 
         // Then

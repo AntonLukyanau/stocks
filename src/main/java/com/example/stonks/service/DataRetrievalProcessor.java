@@ -1,9 +1,9 @@
 package com.example.stonks.service;
 
-import java.util.Map;
+import com.example.stonks.util.RequestParameters;
 
 public interface DataRetrievalProcessor<T> {
 
-    T retrievalProcess(Map<String, Object> requestParameters);
+    T retrievalProcess(RequestParameters requestParameters);
 
 }

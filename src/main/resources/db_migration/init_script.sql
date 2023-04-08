@@ -24,13 +24,17 @@ CREATE SEQUENCE IF NOT EXISTS stock_data_id_seq
 
 CREATE TABLE IF NOT EXISTS stock_data
 (
-    id           BIGINT DEFAULT nextval('stock_data_id_seq') PRIMARY KEY,
-    company_code VARCHAR(255) UNIQUE NOT NULL,
-    at_date      DATE                NOT NULL,
-    start_price  NUMERIC(15, 2)      NOT NULL,
-    max_price    NUMERIC(15, 2)      NOT NULL,
-    min_price    NUMERIC(15, 2)      NOT NULL,
-    end_price    NUMERIC(15, 2)      NOT NULL,
-    volume       BIGINT              NOT NULL
+    id               BIGINT DEFAULT nextval('stock_data_id_seq') PRIMARY KEY,
+    request_id       BIGINT              NOT NULL,
+    company_code     VARCHAR(255) UNIQUE NOT NULL,
+    at_date          DATE                NOT NULL,
+    start_price      NUMERIC(15, 2)      NOT NULL,
+    max_price        NUMERIC(15, 2)      NOT NULL,
+    min_price        NUMERIC(15, 2)      NOT NULL,
+    end_price        NUMERIC(15, 2)      NOT NULL,
+    volume           BIGINT              NOT NULL,
+    result_frequency VARCHAR(255)        NOT NULL,
+    CONSTRAINT stock_data_request_to_nyse_fk
+        FOREIGN KEY (request_id) REFERENCES request_to_nyse (id)
 );
 

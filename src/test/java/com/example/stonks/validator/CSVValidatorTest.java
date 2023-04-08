@@ -2,7 +2,8 @@ package com.example.stonks.validator;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CSVValidatorTest {
 
@@ -12,7 +13,7 @@ class CSVValidatorTest {
     void testReturnTrueWhenCSVIsValid() {
         //given
         String csv = """
-                q,w,e,r,t,y
+                Date,Open,High,Low,Close,Volume
                 111,"2","3","4","5","6"
                 666,"5","4","3","2","1"
                 """;
@@ -26,7 +27,7 @@ class CSVValidatorTest {
     void testReturnFalseWhenDataIsValidHeaderIsNotValid() {
         //given
         String csv = """
-                q,w,e,r,t,y,y
+                Date,Open,High,Low,Close,Volume,seventhValue
                 111,"2","3","4","5","6"
                 666,"5","4","3","2","1"
                 """;
@@ -40,7 +41,7 @@ class CSVValidatorTest {
     void testReturnFalseWhenDataNotValidHeaderIsValid() {
         //given
         String csv = """
-                q,w,e,r,t,y
+                Date,Open,High,Low,Close,Volume
                 1,2,3,4,5,6
                 """;
         //when
@@ -53,7 +54,7 @@ class CSVValidatorTest {
     void testReturnFalseWhenDataNotValidHeaderIsNotValid() {
         //given
         String csv = """
-                q,w,e,r,t,y,y
+                Date,Open,High,Low,Close
                 1,2,3,4,5,6,7
                 """;
         //when
@@ -75,7 +76,7 @@ class CSVValidatorTest {
     @Test
     void testReturnFalseWhenCSVHasOnlyHeader() {
         //given
-        String csv = "1,2,3,4,5,6";
+        String csv = "Date,Open,High,Low,Close,Volume";
         //when
         boolean isValid = validator.validate(csv);
         //then

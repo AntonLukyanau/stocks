@@ -1,10 +1,12 @@
 package com.example.stonks.util;
 
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 public class NYSEConstants {
-    public static final String COMPANY_PARAMETER = "companyName";
-    public static final String FREQUENCY_PARAMETER = "frequency";
-    public static final String START_DATE = "startdate";
-    public static final String END_DATE = "enddate";
+
+    public static final DateTimeFormatter DATE_FORMAT =
+            DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH);
 
     public static final String URL_TEMPLATE = "https://www.marketwatch.com/investing/stock/"
             + "{companyCode}/downloaddatapartial"
@@ -15,4 +17,7 @@ public class NYSEConstants {
             + "&csvdownload=true"
             + "&downloadpartial=false"
             + "&newdates=false";
+
+    public static final String CSV_HEADER = "Date,Open,High,Low,Close,Volume";
+
 }
