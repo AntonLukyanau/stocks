@@ -1,5 +1,6 @@
 package com.example.stonks.service;
 
+import com.example.stonks.dto.NYSEResultFrequency;
 import com.example.stonks.dto.StockDataDTO;
 import com.example.stonks.dto.StockNormalizedDTO;
 import com.example.stonks.util.RequestParameters;
@@ -24,6 +25,8 @@ class NormalizeSortedDateServiceTest {
     @InjectMocks
     private NormalizeSortedDateService normalizeSortedDateService;
 
+    @Mock
+    private ParameterService<RequestParameters> stockParameterService;
     @Mock
     private DataRetrievalProcessor<List<StockDataDTO>> stockDataRetrievalProcessor;
     @Mock
@@ -54,7 +57,13 @@ class NormalizeSortedDateServiceTest {
         StockNormalizedDTO e1 = new StockNormalizedDTO(aapl1, BigDecimal.valueOf((200.0 - 100.0) / 100.0));
         StockNormalizedDTO e2 = new StockNormalizedDTO(aapl2, BigDecimal.valueOf((250.0 - 100.0) / 100.0));
         List<StockNormalizedDTO> stockNormalizedDTOs = List.of(e2, e1);
+        RequestParameters parameters = new RequestParameters(
+                "aapl",
+                NYSEResultFrequency.DAILY,
+                LocalDate.now(),
+                LocalDate.now().minusDays(1));
         // when
+        when(stockParameterService.fillParameters(any())).thenReturn(parameters);
         when(stockDataRetrievalProcessor.retrievalProcess(any(RequestParameters.class))).thenReturn(stockDataDTOs);
         when(stockNormalizeDTOConverter.convert(any(StockDataDTO.class)))
                 .thenReturn(stockNormalizedDTOs.get(0), stockNormalizedDTOs.get(1));

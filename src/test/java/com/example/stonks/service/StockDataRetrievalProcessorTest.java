@@ -4,6 +4,7 @@ import com.example.stonks.dto.NYSEResultFrequency;
 import com.example.stonks.dto.StockDataDTO;
 import com.example.stonks.entity.StockData;
 import com.example.stonks.repository.RequestToNYSERepository;
+import com.example.stonks.service.cache.RequestCache;
 import com.example.stonks.service.rest.DataRetriever;
 import com.example.stonks.util.RequestParameters;
 import com.example.stonks.util.StockDataWrap;
@@ -31,12 +32,14 @@ public class StockDataRetrievalProcessorTest {
     @Mock
     private DataRetriever<String> stockDataRetriever;
 
-
     @Mock
     private Converter<StockDataDTO, StockData> stockDataConverter;
 
     @Mock
     private RequestToNYSERepository requestRepository;
+
+    @Mock
+    private RequestCache<RequestParameters, List<StockDataDTO>> requestCache;
 
     @InjectMocks
     private StockDataRetrievalProcessor retrievalProcessor;
@@ -49,13 +52,16 @@ public class StockDataRetrievalProcessorTest {
                 01/01/2022,"150.0","200.0","100.0","180.0","50,000"
                 """;
         RequestParameters parameters = new RequestParameters(
-                "aapl", NYSEResultFrequency.DAILY, null, null);
+                "aapl",
+                NYSEResultFrequency.DAILY,
+                LocalDate.of(2022, 2, 10),
+                LocalDate.of(2022, 2, 9));
 
         StockDataWrap dataWrapper = new StockDataWrap(validData, "aapl", NYSEResultFrequency.DAILY);
         List<StockDataDTO> expectedStockDataDTOS = List.of(
                 StockDataDTO.builder()
                         .companyCode("aapl")
-                        .date(LocalDate.of(2022, 1, 1))
+                        .date(LocalDate.of(2022, 2, 9))
                         .startPrice(BigDecimal.valueOf(150.0))
                         .maxPrice(BigDecimal.valueOf(200.0))
                         .minPrice(BigDecimal.valueOf(100.0))
@@ -65,21 +71,23 @@ public class StockDataRetrievalProcessorTest {
         );
         StockData stockData = StockData.builder()
                 .companyCode("aapl")
-                .date(LocalDate.of(2022, 1, 1))
+                .date(LocalDate.of(2022, 2, 9))
                 .startPrice(BigDecimal.valueOf(150.0))
                 .maxPrice(BigDecimal.valueOf(200.0))
                 .minPrice(BigDecimal.valueOf(100.0))
                 .endPrice(BigDecimal.valueOf(180.0))
                 .volume(50000L)
                 .build();
+        // when
+        when(requestCache.containsKey(any())).thenReturn(false);
         when(stockDataRetriever.retrieveData(parameters)).thenReturn(validData);
         when(stockDataParser.parse(dataWrapper)).thenReturn(expectedStockDataDTOS);
         when(stockDataConverter.convert(any())).thenReturn(stockData);
 
-        // when
         List<StockDataDTO> actualStockDataDTOS = retrievalProcessor.retrievalProcess(parameters);
 
         // then
+        verify(requestCache).containsKey(parameters);
         verify(stockDataRetriever).retrieveData(parameters);
         verify(stockDataParser).parse(dataWrapper);
         verify(stockDataConverter).convert(expectedStockDataDTOS.get(0));
@@ -92,9 +100,13 @@ public class StockDataRetrievalProcessorTest {
         // given
         String invalidData = "invalid,data,here";
         RequestParameters parameters = new RequestParameters(
-                "aapl", NYSEResultFrequency.DAILY, null, null);
+                "aapl",
+                NYSEResultFrequency.DAILY,
+                LocalDate.of(2022, 2, 10),
+                LocalDate.of(2022, 2, 9));
 
         // when
+        when(requestCache.containsKey(any())).thenReturn(false);
         when(stockDataRetriever.retrieveData(parameters)).thenReturn(invalidData);
         List<StockDataDTO> actualStockDataDTOS = retrievalProcessor.retrievalProcess(parameters);
 
@@ -110,13 +122,17 @@ public class StockDataRetrievalProcessorTest {
         // given
         String emptyData = "";
         RequestParameters parameters = new RequestParameters(
-                "aapl", NYSEResultFrequency.DAILY, null, null);
+                "aapl",
+                NYSEResultFrequency.DAILY,
+                LocalDate.of(2022, 2, 10),
+                LocalDate.of(2022, 2, 9));
 
         StockDataWrap dataWrapper = new StockDataWrap(emptyData, "aapl", NYSEResultFrequency.DAILY);
+        // when
+        when(requestCache.containsKey(any())).thenReturn(false);
         when(stockDataRetriever.retrieveData(parameters)).thenReturn(emptyData);
         when(stockDataParser.parse(dataWrapper)).thenReturn(Collections.emptyList());
 
-        // when
         List<StockDataDTO> actualStockDataDTOS = retrievalProcessor.retrievalProcess(parameters);
 
         // then
@@ -134,6 +150,7 @@ public class StockDataRetrievalProcessorTest {
         RequestParameters parameters = new RequestParameters(
                 "aapl", null, null, null);
         // when
+        when(requestCache.containsKey(any())).thenReturn(false);
         List<StockDataDTO> stockDataDTOS = retrievalProcessor.retrievalProcess(parameters);
         // then
         assertTrue(stockDataDTOS.isEmpty());

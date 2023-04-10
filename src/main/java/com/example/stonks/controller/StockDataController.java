@@ -1,7 +1,13 @@
 package com.example.stonks.controller;
 
+import com.example.stonks.dto.StockDataDTO;
 import com.example.stonks.dto.StockNormalizedDTO;
+import com.example.stonks.dto.StockStatistic;
+import com.example.stonks.service.DataRetrievalProcessor;
 import com.example.stonks.service.NormalizeDateService;
+import com.example.stonks.service.StatisticService;
+import com.example.stonks.service.ParameterService;
+import com.example.stonks.util.RequestParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -22,16 +28,20 @@ public class StockDataController {
     private List<String> companies;
 
     private final NormalizeDateService normalizeSortedDateService;
+    private final ParameterService<RequestParameters> stockParameterService;
+    private final DataRetrievalProcessor<List<StockDataDTO>> stockDataRetrievalProcessor;
+    private final StatisticService<StockStatistic, StockDataDTO> stockStatisticService;
 
-    @GetMapping("/{companyCode}/period")
-    public ResponseEntity<List<StockNormalizedDTO>> getStocksDataByCompany(
+    @GetMapping("/statistics/{companyCode}/period")
+    public ResponseEntity<StockStatistic> getStockStatisticByCompany(
             @PathVariable String companyCode,
             @RequestParam("startdate") String start,
             @RequestParam("enddate") String end
     ) {
-        List<StockNormalizedDTO> normalizedDTOS = normalizeSortedDateService
-                .getNormalizedDTOS(List.of(companyCode), start, end);
-        return ResponseEntity.ok(normalizedDTOS);
+        RequestParameters parameters = stockParameterService.fillParameters(companyCode, start, end);
+        List<StockDataDTO> stocks = stockDataRetrievalProcessor.retrievalProcess(parameters);
+        StockStatistic stockStatistic = stockStatisticService.aggregate(stocks);
+        return ResponseEntity.ok(stockStatistic);
     }
 
     @GetMapping("/all/period")
