@@ -8,6 +8,10 @@ import com.example.stonks.service.NormalizeDateService;
 import com.example.stonks.service.StatisticService;
 import com.example.stonks.service.ParameterService;
 import com.example.stonks.util.RequestParameters;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +36,22 @@ public class StockDataController {
     private final DataRetrievalProcessor<List<StockDataDTO>> stockDataRetrievalProcessor;
     private final StatisticService<StockStatistic, StockDataDTO> stockStatisticService;
 
+    @Operation(
+            summary = "Retrieve aggregated stock statistic by company for entered period",
+            description = """
+                    Find stocks by company for entered period.
+                    Then find highest price, lowest price, start date and end date through found stocks.
+                    """)
+    @Parameter(name = "startdate",
+            in = ParameterIn.QUERY,
+            description = "Stocks will be found from this date",
+            required = true,
+            example = "02/15/2023")
+    @Parameter(name = "enddate",
+            in = ParameterIn.QUERY,
+            description = "Stocks will be found to this date",
+            required = true,
+            example = "02/19/2023")
     @GetMapping("/statistics/{companyCode}/period")
     public ResponseEntity<StockStatistic> getStockStatisticByCompany(
             @PathVariable String companyCode,
@@ -44,6 +64,22 @@ public class StockDataController {
         return ResponseEntity.ok(stockStatistic);
     }
 
+    @Operation(
+            summary = "Retrieve sorted by normalized value stock data by all tracked companies for entered period",
+            description = """
+                    Find stocks for entered period.
+                    Then calculate normalize value for each stock and sort that
+                    """)
+    @Parameter(name = "startdate",
+            in = ParameterIn.QUERY,
+            description = "Stocks will be found from this date",
+            required = true,
+            example = "02/15/2023")
+    @Parameter(name = "enddate",
+            in = ParameterIn.QUERY,
+            description = "Stocks will be found to this date",
+            required = true,
+            example = "02/19/2023")
     @GetMapping("/all/period")
     public ResponseEntity<List<StockNormalizedDTO>> getAllCompanyStocksData(
             @RequestParam("startdate") String start,
@@ -54,6 +90,22 @@ public class StockDataController {
         return ResponseEntity.ok(normalizedDTOS);
     }
 
+    @Operation(
+            summary = "Retrieve highest by normalized value stock data by all tracked companies for entered date",
+            description = """
+                    Find stocks for entered date.
+                    Then calculate normalize value for each stock and find highest
+                    """)
+    @Parameter(name = "date",
+            in = ParameterIn.QUERY,
+            description = "Stocks will be found by this date",
+            required = true,
+            example = "02/15/2023")
+    @ApiResponse(responseCode = "200", description = "Respond if at least one stock was found")
+    @ApiResponse(responseCode = "204", description = """
+            Respond if nothing was found
+            or retrieved invalid data from external service
+            """)
     @GetMapping("/all/highest")
     public ResponseEntity<StockNormalizedDTO> getHighestStockBySpecificDay(@RequestParam("date") String date) {
         return normalizeSortedDateService.getNormalizedDTOS(companies, date, date)
