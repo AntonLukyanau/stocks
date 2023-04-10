@@ -4,6 +4,7 @@ import com.example.stonks.dto.NYSEResultFrequency;
 import com.example.stonks.util.NYSEConstants;
 import com.example.stonks.util.RequestParameters;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -39,7 +40,7 @@ public class CSVDataRetriever implements DataRetriever<String> {
                 companyCode,
                 startDate.format(FORMATTER),
                 endDate.format(FORMATTER),
-                (Period.between(endDate, startDate).getDays()),
+                Math.abs(Period.between(startDate, endDate).getDays()),
                 frequency);
         return response.getBody();
     }

@@ -10,8 +10,8 @@ public class NYSEConstants {
 
     public static final String URL_TEMPLATE = "https://www.marketwatch.com/investing/stock/"
             + "{companyCode}/downloaddatapartial"
-            + "?startdate={startDate}%2000:00:00"
-            + "&enddate={endDate}%2023:59:59"
+            + "?startdate={startDate} 00:00:00"
+            + "&enddate={endDate} 23:59:59"
             + "&daterange=d{period}"
             + "&frequency={frequency}"
             + "&csvdownload=true"
