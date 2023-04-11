@@ -1,13 +1,12 @@
 package com.alukyanau.nysestocks.controller;
 
 import com.alukyanau.nysestocks.dto.StockDataDTO;
+import com.alukyanau.nysestocks.dto.StockStatistic;
 import com.alukyanau.nysestocks.service.DataRetrievalProcessor;
 import com.alukyanau.nysestocks.service.NormalizeDateService;
-import com.alukyanau.nysestocks.util.RequestParameters;
-import com.alukyanau.nysestocks.dto.NYSEResultFrequency;
-import com.alukyanau.nysestocks.dto.StockStatistic;
 import com.alukyanau.nysestocks.service.ParameterService;
 import com.alukyanau.nysestocks.service.StatisticService;
+import com.alukyanau.nysestocks.util.RequestParameters;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -68,7 +67,6 @@ class StockDataControllerTest {
         BigDecimal lowestPrice = BigDecimal.valueOf(100.0);
         RequestParameters parameters = new RequestParameters(
                 company,
-                NYSEResultFrequency.DAILY,
                 oldest,
                 newest);
         StockDataDTO stock1 = StockDataDTO.builder()

@@ -1,9 +1,8 @@
 package com.alukyanau.nysestocks.service;
 
 import com.alukyanau.nysestocks.dto.StockDataDTO;
-import com.alukyanau.nysestocks.validator.CSVValidator;
-import com.alukyanau.nysestocks.dto.NYSEResultFrequency;
 import com.alukyanau.nysestocks.util.StockDataWrap;
+import com.alukyanau.nysestocks.validator.CSVValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,7 +34,7 @@ class StockDataParserTest {
                 Invalid Header
                 04/01/2023,"100.0","110.0","90.0","105.0","100000"
                 """;
-        StockDataWrap wrapper = new StockDataWrap(csvData, "ABC", NYSEResultFrequency.DAILY);
+        StockDataWrap wrapper = new StockDataWrap(csvData, "ABC");
 
         // When
         when(validator.validate(any())).thenReturn(false);
@@ -52,7 +51,7 @@ class StockDataParserTest {
                 Date,Open,High,Low,Close,Volume
                 04/01/2023,invalid,110.0,90.0,105.0,100000
                 """;
-        StockDataWrap wrapper = new StockDataWrap(csvData, "ABC", NYSEResultFrequency.DAILY);
+        StockDataWrap wrapper = new StockDataWrap(csvData, "ABC");
 
         // When
         when(validator.validate(any())).thenReturn(false);
@@ -69,7 +68,7 @@ class StockDataParserTest {
                 Date,Open,High,Low,Close,Volume
                 04/01/2023,"100.0","110.0","90.0","105.0","100000"
                 """;
-        StockDataWrap wrapper = new StockDataWrap(csvData, "ABC", NYSEResultFrequency.DAILY);
+        StockDataWrap wrapper = new StockDataWrap(csvData, "ABC");
 
         // When
         when(validator.validate(any())).thenReturn(true);
@@ -94,7 +93,7 @@ class StockDataParserTest {
                 Date,Open,High,Low,Close,Volume
                 04/01/2023,"100.0","110.0","90.0","105.0","1,000,000"
                 """;
-        StockDataWrap wrapper = new StockDataWrap(csvData, "ABC", NYSEResultFrequency.DAILY);
+        StockDataWrap wrapper = new StockDataWrap(csvData, "ABC");
 
         // When
         when(validator.validate(any())).thenReturn(true);
@@ -114,7 +113,7 @@ class StockDataParserTest {
                 04/01/2023,"100.0","110.0","90.0","105.0","100,000"
                 04/02/2023,"105.0","115.0","95.0","100.0","150,000"
                 """;
-        StockDataWrap wrapper = new StockDataWrap(csvData, "ABC", NYSEResultFrequency.DAILY);
+        StockDataWrap wrapper = new StockDataWrap(csvData, "ABC");
         // When
         when(validator.validate(any())).thenReturn(true);
         List<StockDataDTO> stockDataList = parser.parse(wrapper);

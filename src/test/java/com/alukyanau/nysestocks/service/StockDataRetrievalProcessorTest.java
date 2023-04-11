@@ -4,9 +4,8 @@ import com.alukyanau.nysestocks.dto.StockDataDTO;
 import com.alukyanau.nysestocks.entity.StockData;
 import com.alukyanau.nysestocks.repository.RequestToNYSERepository;
 import com.alukyanau.nysestocks.service.cache.RequestCache;
-import com.alukyanau.nysestocks.util.RequestParameters;
-import com.alukyanau.nysestocks.dto.NYSEResultFrequency;
 import com.alukyanau.nysestocks.service.rest.DataRetriever;
+import com.alukyanau.nysestocks.util.RequestParameters;
 import com.alukyanau.nysestocks.util.StockDataWrap;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,11 +52,10 @@ public class StockDataRetrievalProcessorTest {
                 """;
         RequestParameters parameters = new RequestParameters(
                 "aapl",
-                NYSEResultFrequency.DAILY,
                 LocalDate.of(2022, 2, 10),
                 LocalDate.of(2022, 2, 9));
 
-        StockDataWrap dataWrapper = new StockDataWrap(validData, "aapl", NYSEResultFrequency.DAILY);
+        StockDataWrap dataWrapper = new StockDataWrap(validData, "aapl");
         List<StockDataDTO> expectedStockDataDTOS = List.of(
                 StockDataDTO.builder()
                         .companyCode("aapl")
@@ -101,7 +99,6 @@ public class StockDataRetrievalProcessorTest {
         String invalidData = "invalid,data,here";
         RequestParameters parameters = new RequestParameters(
                 "aapl",
-                NYSEResultFrequency.DAILY,
                 LocalDate.of(2022, 2, 10),
                 LocalDate.of(2022, 2, 9));
 
@@ -123,11 +120,10 @@ public class StockDataRetrievalProcessorTest {
         String emptyData = "";
         RequestParameters parameters = new RequestParameters(
                 "aapl",
-                NYSEResultFrequency.DAILY,
                 LocalDate.of(2022, 2, 10),
                 LocalDate.of(2022, 2, 9));
 
-        StockDataWrap dataWrapper = new StockDataWrap(emptyData, "aapl", NYSEResultFrequency.DAILY);
+        StockDataWrap dataWrapper = new StockDataWrap(emptyData, "aapl");
         // when
         when(requestCache.containsKey(any())).thenReturn(false);
         when(stockDataRetriever.retrieveData(parameters)).thenReturn(emptyData);
@@ -148,7 +144,7 @@ public class StockDataRetrievalProcessorTest {
     public void testRetrievalProcessMissingParameter() {
         // given
         RequestParameters parameters = new RequestParameters(
-                "aapl", null, null, null);
+                "aapl", null, null);
         // when
         when(requestCache.containsKey(any())).thenReturn(false);
         List<StockDataDTO> stockDataDTOS = retrievalProcessor.retrievalProcess(parameters);

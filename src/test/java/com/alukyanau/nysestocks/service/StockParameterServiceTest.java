@@ -1,7 +1,6 @@
 package com.alukyanau.nysestocks.service;
 
 import com.alukyanau.nysestocks.util.RequestParameters;
-import com.alukyanau.nysestocks.dto.NYSEResultFrequency;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +32,6 @@ class StockParameterServiceTest {
         RequestParameters parameters = stockParameterService.fillParameters(company, start, end);
         // then
         assertEquals(company, parameters.companyName());
-        assertEquals(NYSEResultFrequency.DAILY, parameters.frequency());
         assertEquals(LocalDate.of(2023, 3, 1), parameters.startDate());
         assertEquals(LocalDate.of(2023, 4, 1), parameters.endDate());
     }
@@ -52,7 +50,6 @@ class StockParameterServiceTest {
         RequestParameters parameters = stockParameterService.fillParameters(company, start, end);
         // then
         assertEquals(company, parameters.companyName());
-        assertEquals(NYSEResultFrequency.DAILY, parameters.frequency());
         assertEquals(today, parameters.endDate());
         assertEquals(lastWorkingDay, parameters.startDate());
     }

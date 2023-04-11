@@ -1,6 +1,5 @@
 package com.alukyanau.nysestocks.service.rest;
 
-import com.alukyanau.nysestocks.dto.NYSEResultFrequency;
 import com.alukyanau.nysestocks.util.RequestParameters;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,21 +25,10 @@ class CSVDataRetrieverTest {
     private RestTemplate restTemplate;
 
     @Test
-    void testRetrieveDataWithMissingFrequencyParameter() {
-        //given
-        RequestParameters parameters = new RequestParameters(
-                "epam", null, null, null);
-        //when
-        String retrievedData = csvDataRetriever.retrieveData(parameters);
-        //then
-        assertTrue(retrievedData.isEmpty());
-    }
-
-    @Test
     void testRetrieveDataWithoutStartAndEndParameters() {
         //given
         RequestParameters parameters = new RequestParameters(
-                "epam", NYSEResultFrequency.DAILY, null, null);
+                "epam", null, null);
         //when
         String retrievedData = csvDataRetriever.retrieveData(parameters);
         //then
@@ -52,7 +40,7 @@ class CSVDataRetrieverTest {
     void testRetrieveDataWithCorrectParameters() {
         //given
         RequestParameters parameters = new RequestParameters(
-                "epam", NYSEResultFrequency.DAILY, LocalDate.now(), LocalDate.now().minusDays(1));
+                "epam", LocalDate.now(), LocalDate.now().minusDays(1));
         //when
         when(restTemplate.getForEntity(any(), any(), any(), any(), any(), any(), any()))
                 .thenReturn(ResponseEntity.ok("some data"));

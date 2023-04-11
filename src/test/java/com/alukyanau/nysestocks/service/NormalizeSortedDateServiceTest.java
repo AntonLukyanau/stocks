@@ -1,6 +1,5 @@
 package com.alukyanau.nysestocks.service;
 
-import com.alukyanau.nysestocks.dto.NYSEResultFrequency;
 import com.alukyanau.nysestocks.dto.StockDataDTO;
 import com.alukyanau.nysestocks.dto.StockNormalizedDTO;
 import com.alukyanau.nysestocks.util.RequestParameters;
@@ -59,7 +58,6 @@ class NormalizeSortedDateServiceTest {
         List<StockNormalizedDTO> stockNormalizedDTOs = List.of(e2, e1);
         RequestParameters parameters = new RequestParameters(
                 "aapl",
-                NYSEResultFrequency.DAILY,
                 LocalDate.now(),
                 LocalDate.now().minusDays(1));
         // when
