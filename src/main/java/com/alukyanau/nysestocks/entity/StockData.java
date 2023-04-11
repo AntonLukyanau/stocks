@@ -1,10 +1,7 @@
 package com.alukyanau.nysestocks.entity;
 
-import com.alukyanau.nysestocks.dto.NYSEResultFrequency;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -57,10 +54,6 @@ public class StockData {
 
     @Column(name = "end_price")
     private BigDecimal endPrice;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "result_frequency")
-    private NYSEResultFrequency resultFrequency;
 
     @Column(name = "volume")
     private Long volume;

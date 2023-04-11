@@ -1,6 +1,5 @@
 package com.alukyanau.nysestocks.service;
 
-import com.alukyanau.nysestocks.dto.NYSEResultFrequency;
 import com.alukyanau.nysestocks.dto.StockDataDTO;
 import com.alukyanau.nysestocks.entity.RequestToNYSE;
 import com.alukyanau.nysestocks.entity.StockData;
@@ -40,7 +39,6 @@ public class StockDataRetrievalProcessor implements DataRetrievalProcessor<List<
         lastRequests.forEach(requestToNYSE -> {
             RequestParameters parameters = new RequestParameters(
                     requestToNYSE.getCompanyParameter(),
-                    requestToNYSE.getFrequencyParameter(),
                     requestToNYSE.getStartDateParameter(),
                     requestToNYSE.getEndDateParameter()
             );
@@ -52,7 +50,6 @@ public class StockDataRetrievalProcessor implements DataRetrievalProcessor<List<
                             .maxPrice(stockData.getMaxPrice())
                             .minPrice(stockData.getMinPrice())
                             .endPrice(stockData.getEndPrice())
-                            .resultFrequency(stockData.getResultFrequency())
                             .volume(stockData.getVolume())
                             .build())
                     .toList();
@@ -68,14 +65,13 @@ public class StockDataRetrievalProcessor implements DataRetrievalProcessor<List<
             return requestCache.getBy(parameters);
         }
         String companyName = parameters.companyName();
-        NYSEResultFrequency frequency = parameters.frequency();
         if (parameters.isContainsNull()) {
             log.warn("Invoke retrieval process with missing parameters. Parameters: " + parameters);
             return Collections.emptyList();
         }
         String data = stockDataRetriever.retrieveData(parameters);
 
-        StockDataWrap dataWrapper = new StockDataWrap(data, companyName, frequency);
+        StockDataWrap dataWrapper = new StockDataWrap(data, companyName);
         List<StockDataDTO> stockDataDTOS = stockDataParser.parse(dataWrapper);
         if (stockDataDTOS.isEmpty()) {
             log.warn("Retrieve data from NYSE was failed. Parameters: " + parameters);
@@ -92,7 +88,6 @@ public class StockDataRetrievalProcessor implements DataRetrievalProcessor<List<
                 .toList();
         RequestToNYSE request = RequestToNYSE.builder()
                 .companyParameter(parameters.companyName())
-                .frequencyParameter(parameters.frequency())
                 .startDateParameter(parameters.startDate())
                 .endDateParameter(parameters.endDate())
                 .date(LocalDate.now())

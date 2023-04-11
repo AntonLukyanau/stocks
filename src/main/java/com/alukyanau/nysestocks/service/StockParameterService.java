@@ -2,7 +2,6 @@ package com.alukyanau.nysestocks.service;
 
 import com.alukyanau.nysestocks.util.NYSEConstants;
 import com.alukyanau.nysestocks.util.RequestParameters;
-import com.alukyanau.nysestocks.dto.NYSEResultFrequency;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +24,6 @@ public class StockParameterService implements ParameterService<RequestParameters
         LocalDate startDate = start == null || start.isBlank()
                 ? nyseWorkDaysResolver.resolveLastWorkDayBefore(endDate)
                 : LocalDate.parse(start, NYSEConstants.DATE_FORMAT);
-        return new RequestParameters(company, NYSEResultFrequency.DAILY, startDate, endDate);
+        return new RequestParameters(company, startDate, endDate);
     }
 }

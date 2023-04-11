@@ -2,7 +2,6 @@ package com.alukyanau.nysestocks.service.rest;
 
 import com.alukyanau.nysestocks.util.NYSEConstants;
 import com.alukyanau.nysestocks.util.RequestParameters;
-import com.alukyanau.nysestocks.dto.NYSEResultFrequency;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,21 +25,19 @@ public class CSVDataRetriever implements DataRetriever<String> {
             return "";
         }
         String companyCode = parameters.companyName();
-        NYSEResultFrequency frequency = parameters.frequency();
         LocalDate startDate = parameters.startDate();
         LocalDate endDate = parameters.endDate();
-        return doRequestCSVData(companyCode, frequency.getUrlParameterValue(), startDate, endDate);
+        return doRequestCSVData(companyCode, startDate, endDate);
     }
 
-    private String doRequestCSVData(String companyCode, String frequency, LocalDate startDate, LocalDate endDate) {
+    private String doRequestCSVData(String companyCode, LocalDate startDate, LocalDate endDate) {
         ResponseEntity<String> response = restTemplate.getForEntity(
                 NYSEConstants.URL_TEMPLATE,
                 String.class,
                 companyCode,
                 startDate.format(FORMATTER),
                 endDate.format(FORMATTER),
-                Math.abs(Period.between(startDate, endDate).getDays()),
-                frequency);
+                Math.abs(Period.between(startDate, endDate).getDays()));
         return response.getBody();
     }
 

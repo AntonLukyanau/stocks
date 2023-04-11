@@ -13,7 +13,7 @@ public class NYSEConstants {
             + "?startdate={startDate} 00:00:00"
             + "&enddate={endDate} 23:59:59"
             + "&daterange=d{period}"
-            + "&frequency={frequency}"
+            + "&frequency=p1d"
             + "&csvdownload=true"
             + "&downloadpartial=false"
             + "&newdates=false";

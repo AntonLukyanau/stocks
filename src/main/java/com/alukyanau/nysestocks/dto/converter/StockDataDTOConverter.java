@@ -17,7 +17,6 @@ public class StockDataDTOConverter implements Converter<StockDataDTO, StockData>
                 .maxPrice(source.getMaxPrice())
                 .minPrice(source.getMinPrice())
                 .endPrice(source.getEndPrice())
-                .resultFrequency(source.getResultFrequency())
                 .volume(source.getVolume())
                 .build();
     }

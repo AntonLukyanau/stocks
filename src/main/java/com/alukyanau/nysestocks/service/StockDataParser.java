@@ -1,6 +1,5 @@
 package com.alukyanau.nysestocks.service;
 
-import com.alukyanau.nysestocks.dto.NYSEResultFrequency;
 import com.alukyanau.nysestocks.dto.StockDataDTO;
 import com.alukyanau.nysestocks.util.NYSEConstants;
 import com.alukyanau.nysestocks.util.StockDataWrap;
@@ -28,11 +27,10 @@ public class StockDataParser implements Parser<StockDataDTO, StockDataWrap> {
     public List<StockDataDTO> parse(StockDataWrap wrapper) {
         List<StockDataDTO> stockDataList = new ArrayList<>();
         String company = wrapper.company();
-        NYSEResultFrequency resultFrequency = wrapper.resultFrequency();
         String csvData = wrapper.source();
         if (!csvValidator.validate(csvData)) {
             log.warn("Retrieved data from NYSE are invalid." +
-                    " Parameters: " + wrapper.company() + " " + wrapper.resultFrequency());
+                    " Parameters: " + wrapper.company());
             return Collections.emptyList();
         }
         String[] rows = csvData.split("\n");
@@ -48,7 +46,6 @@ public class StockDataParser implements Parser<StockDataDTO, StockDataWrap> {
                         .maxPrice(BigDecimal.valueOf(Double.parseDouble(values[2])))
                         .minPrice(BigDecimal.valueOf(Double.parseDouble(values[3])))
                         .endPrice(BigDecimal.valueOf(Double.parseDouble(values[4])))
-                        .resultFrequency(resultFrequency)
                         .volume(parseVolume(values[5]))
                         .build();
                 stockDataList.add(stockData);
