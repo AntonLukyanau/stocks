@@ -12,6 +12,14 @@ public class RequestCache<K, V> {
         values = new LRuCacheMap<>(maxCacheSize);
     }
 
+    public int getMaxSize() {
+        return values.getMaxSize();
+    }
+
+    public int size() {
+        return values.size();
+    }
+
     public boolean containsKey(K key) {
         reduceEmptyValues();
         return values.containsKey(key);

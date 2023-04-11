@@ -12,6 +12,10 @@ class LRuCacheMap<K, V> extends LinkedHashMap<K, V> {
         this.maxSize = maxCacheSize;
     }
 
+    public int getMaxSize() {
+        return maxSize;
+    }
+
     protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
         return size() >= maxSize;
     }

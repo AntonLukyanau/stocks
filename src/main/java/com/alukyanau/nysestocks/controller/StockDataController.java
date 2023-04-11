@@ -1,12 +1,12 @@
 package com.alukyanau.nysestocks.controller;
 
+import com.alukyanau.nysestocks.dto.StockDataDTO;
 import com.alukyanau.nysestocks.dto.StockNormalizedDTO;
+import com.alukyanau.nysestocks.dto.StockStatistic;
 import com.alukyanau.nysestocks.service.DataRetrievalProcessor;
 import com.alukyanau.nysestocks.service.NormalizeDateService;
-import com.alukyanau.nysestocks.dto.StockDataDTO;
-import com.alukyanau.nysestocks.dto.StockStatistic;
-import com.alukyanau.nysestocks.service.StatisticService;
 import com.alukyanau.nysestocks.service.ParameterService;
+import com.alukyanau.nysestocks.service.StatisticService;
 import com.alukyanau.nysestocks.util.RequestParameters;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -45,12 +45,10 @@ public class StockDataController {
     @Parameter(name = "startdate",
             in = ParameterIn.QUERY,
             description = "Stocks will be found from this date",
-            required = true,
             example = "02/15/2023")
     @Parameter(name = "enddate",
             in = ParameterIn.QUERY,
             description = "Stocks will be found to this date",
-            required = true,
             example = "02/19/2023")
     @GetMapping("/statistics/{companyCode}/period")
     public ResponseEntity<?> getStockStatisticByCompany(
@@ -58,8 +56,6 @@ public class StockDataController {
             @RequestParam("startdate") String start,
             @RequestParam("enddate") String end
     ) {
-        //TODO what if companyCode not in companies list, but that exists in NYSE ?
-        // Should we restrict requests with not allowed companies?
         if (companies.contains(companyCode)) {
             RequestParameters parameters = stockParameterService.fillParameters(companyCode, start, end);
             List<StockDataDTO> stocks = stockDataRetrievalProcessor.retrievalProcess(parameters);
@@ -104,7 +100,6 @@ public class StockDataController {
     @Parameter(name = "date",
             in = ParameterIn.QUERY,
             description = "Stocks will be found by this date",
-            required = true,
             example = "02/15/2023")
     @ApiResponse(responseCode = "200", description = "Respond if at least one stock was found")
     @ApiResponse(responseCode = "204", description = """

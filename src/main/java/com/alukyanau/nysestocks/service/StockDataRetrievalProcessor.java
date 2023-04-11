@@ -5,14 +5,17 @@ import com.alukyanau.nysestocks.dto.StockDataDTO;
 import com.alukyanau.nysestocks.entity.RequestToNYSE;
 import com.alukyanau.nysestocks.entity.StockData;
 import com.alukyanau.nysestocks.repository.RequestToNYSERepository;
+import com.alukyanau.nysestocks.repository.StockRepository;
 import com.alukyanau.nysestocks.service.cache.RequestCache;
 import com.alukyanau.nysestocks.service.rest.DataRetriever;
 import com.alukyanau.nysestocks.util.RequestParameters;
 import com.alukyanau.nysestocks.util.StockDataWrap;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -28,9 +31,38 @@ public class StockDataRetrievalProcessor implements DataRetrievalProcessor<List<
     private final DataRetriever<String> stockDataRetriever;
     private final Converter<StockDataDTO, StockData> stockDataConverter;
     private final RequestToNYSERepository requestRepository;
+    private final StockRepository stockRepository;
     private final RequestCache<RequestParameters, List<StockDataDTO>> requestCache;
 
+    @PostConstruct
+    private void fillCache() {
+        List<RequestToNYSE> lastRequests = requestRepository.findLastRequests(requestCache.getMaxSize());
+        lastRequests.forEach(requestToNYSE -> {
+            RequestParameters parameters = new RequestParameters(
+                    requestToNYSE.getCompanyParameter(),
+                    requestToNYSE.getFrequencyParameter(),
+                    requestToNYSE.getStartDateParameter(),
+                    requestToNYSE.getEndDateParameter()
+            );
+            List<StockDataDTO> results = requestToNYSE.getStocks().stream()
+                    .map(stockData -> StockDataDTO.builder()
+                            .companyCode(stockData.getCompanyCode())
+                            .date(stockData.getDate())
+                            .startPrice(stockData.getStartPrice())
+                            .maxPrice(stockData.getMaxPrice())
+                            .minPrice(stockData.getMinPrice())
+                            .endPrice(stockData.getEndPrice())
+                            .resultFrequency(stockData.getResultFrequency())
+                            .volume(stockData.getVolume())
+                            .build())
+                    .toList();
+            requestCache.store(parameters, results);
+        });
+        log.debug("Cache has {} started size", requestCache.size());
+    }
+
     @Override
+    @Transactional
     public List<StockDataDTO> retrievalProcess(RequestParameters parameters) {
         if (requestCache.containsKey(parameters)) {
             return requestCache.getBy(parameters);
@@ -67,6 +99,8 @@ public class StockDataRetrievalProcessor implements DataRetrievalProcessor<List<
                 .stocks(stocks)
                 .build();
         requestRepository.save(request);
+        stocks.forEach(stockData -> stockData.setRequest(request));
+        stockRepository.saveAll(stocks);
         requestCache.store(parameters, List.copyOf(stockDataDTOS));
     }
 
