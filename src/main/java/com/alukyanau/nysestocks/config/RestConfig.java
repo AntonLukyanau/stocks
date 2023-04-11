@@ -13,7 +13,7 @@ import java.util.List;
 @Configuration
 public class RestConfig {
 
-    @Value("${stonks.request.cache.size}")
+    @Value("${stocks.request.cache.size}")
     private Integer cacheSize;
 
     @Bean
