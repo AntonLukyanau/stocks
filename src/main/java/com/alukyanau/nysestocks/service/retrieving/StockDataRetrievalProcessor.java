@@ -4,7 +4,6 @@ import com.alukyanau.nysestocks.dto.StockDataDTO;
 import com.alukyanau.nysestocks.entity.RequestToNYSE;
 import com.alukyanau.nysestocks.entity.StockData;
 import com.alukyanau.nysestocks.infrastructure.cache.RequestCache;
-import com.alukyanau.nysestocks.infrastructure.cache.RequestCacheSupportable;
 import com.alukyanau.nysestocks.model.CSVStockData;
 import com.alukyanau.nysestocks.model.RequestParameters;
 import com.alukyanau.nysestocks.repository.RequestToNYSERepository;
@@ -24,7 +23,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class StockDataRetrievalProcessor implements DataRetrievalProcessor<List<StockDataDTO>>, RequestCacheSupportable {
+public class StockDataRetrievalProcessor implements DataRetrievalProcessor<List<StockDataDTO>> {
 
     private final DataRetriever<List<CSVStockData>> stockDataRetriever;
     private final Converter<StockData, StockDataDTO> stockDataConverter;
