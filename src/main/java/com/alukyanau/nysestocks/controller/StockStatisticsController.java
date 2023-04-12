@@ -76,7 +76,7 @@ public class StockStatisticsController {
             example = "epam",
             required = true)
     @GetMapping("/{companyCode}/by")
-    public ResponseEntity<?> getForCompanyByMonthAndYear(
+    public ResponseEntity<StockStatistic> getForCompanyByMonthAndYear(
             @PathVariable("companyCode") String companyCode,
             @RequestParam("month") Integer month,
             @RequestParam("year") Integer year
@@ -107,7 +107,7 @@ public class StockStatisticsController {
             description = "Stocks will be found by this year",
             example = "2023")
     @GetMapping("/all/by")
-    public ResponseEntity<?> getAllByMonthAndYear(
+    public ResponseEntity<List<StockStatistic>> getAllByMonthAndYear(
             @RequestParam("month") Integer month,
             @RequestParam("year") Integer year
     ) {
