@@ -28,7 +28,8 @@ public class RequestCache<K, V> {
 
     public V getBy(K key) {
         reduceEmptyValues();
-        return values.get(key).get();
+        SoftReference<V> reference = values.get(key);
+        return reference == null ? null : reference.get();
     }
 
     public void store(K key, V value) {
