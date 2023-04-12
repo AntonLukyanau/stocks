@@ -11,7 +11,6 @@ import com.alukyanau.nysestocks.repository.RequestToNYSERepository;
 import com.alukyanau.nysestocks.repository.StockRepository;
 import com.alukyanau.nysestocks.service.DataRetrievalProcessor;
 import com.alukyanau.nysestocks.service.csv.DataRetriever;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.convert.converter.Converter;
