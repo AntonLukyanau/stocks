@@ -59,4 +59,30 @@ class DateUtilTest {
         assertEquals(LocalDate.of(2023, 2, 1), fixedDateRange.start());
         assertEquals(LocalDate.of(2023, 2, 28), fixedDateRange.end());
     }
+
+    @Test
+    void testResolveOneMonthFixedPeriodWithNullParameters() {
+        // given
+        Integer month = null;
+        Integer year = null;
+        LocalDate today = LocalDate.now();
+        // when
+        FixedDateRange fixedDateRange = dateUtil.resolveOneMonthFixedPeriod(month, year);
+        // then
+        assertEquals(today.withDayOfMonth(1), fixedDateRange.start());
+        assertEquals(today.withDayOfMonth(today.lengthOfMonth()), fixedDateRange.end());
+    }
+
+    @Test
+    void testResolveOneMonthFixedPeriodWithUnboundedParameters() {
+        // given
+        Integer month = 13;
+        Integer year = 1791; // NYSE was opened in 1792
+        LocalDate today = LocalDate.now();
+        // when
+        FixedDateRange fixedDateRange = dateUtil.resolveOneMonthFixedPeriod(month, year);
+        // then
+        assertEquals(today.withDayOfMonth(1), fixedDateRange.start());
+        assertEquals(today.withDayOfMonth(today.lengthOfMonth()), fixedDateRange.end());
+    }
 }
