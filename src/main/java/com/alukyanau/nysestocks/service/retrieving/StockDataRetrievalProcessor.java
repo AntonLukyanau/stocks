@@ -4,6 +4,7 @@ import com.alukyanau.nysestocks.dto.StockDataDTO;
 import com.alukyanau.nysestocks.entity.RequestToNYSE;
 import com.alukyanau.nysestocks.entity.StockData;
 import com.alukyanau.nysestocks.infrastructure.cache.RequestCache;
+import com.alukyanau.nysestocks.infrastructure.cache.RequestCacheSupportable;
 import com.alukyanau.nysestocks.model.CSVStockData;
 import com.alukyanau.nysestocks.model.RequestParameters;
 import com.alukyanau.nysestocks.repository.RequestToNYSERepository;
@@ -24,7 +25,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class StockDataRetrievalProcessor implements DataRetrievalProcessor<List<StockDataDTO>> {
+public class StockDataRetrievalProcessor implements DataRetrievalProcessor<List<StockDataDTO>>, RequestCacheSupportable {
 
     private final DataRetriever<List<CSVStockData>> stockDataRetriever;
     private final Converter<StockData, StockDataDTO> stockDataConverter;
@@ -32,20 +33,6 @@ public class StockDataRetrievalProcessor implements DataRetrievalProcessor<List<
     private final RequestToNYSERepository requestRepository;
     private final StockRepository stockRepository;
     private final RequestCache<RequestParameters, List<StockData>> requestCache;
-
-    @PostConstruct
-    private void fillCache() {
-        List<RequestToNYSE> lastRequests = requestRepository.findLastRequests(requestCache.getMaxSize());
-        lastRequests.forEach(requestToNYSE -> {
-            RequestParameters parameters = new RequestParameters(
-                    requestToNYSE.getCompanyParameter(),
-                    requestToNYSE.getStartDateParameter(),
-                    requestToNYSE.getEndDateParameter()
-            );
-            requestCache.store(parameters, requestToNYSE.getStocks());
-        });
-        log.debug("Cache has {} started size", requestCache.size());
-    }
 
     @Override
     @Transactional
