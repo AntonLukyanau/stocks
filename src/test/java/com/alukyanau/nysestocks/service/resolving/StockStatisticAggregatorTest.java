@@ -2,7 +2,6 @@ package com.alukyanau.nysestocks.service.resolving;
 
 import com.alukyanau.nysestocks.dto.StockDataDTO;
 import com.alukyanau.nysestocks.dto.StockStatistic;
-import com.alukyanau.nysestocks.service.resolving.StockStatisticAggregator;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

@@ -1,7 +1,7 @@
 package com.alukyanau.nysestocks.service.retrieving;
 
-import com.alukyanau.nysestocks.service.WorkDaysResolver;
 import com.alukyanau.nysestocks.model.RequestParameters;
+import com.alukyanau.nysestocks.service.WorkDaysResolver;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

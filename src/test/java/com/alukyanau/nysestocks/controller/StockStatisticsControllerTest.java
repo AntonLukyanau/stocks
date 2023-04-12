@@ -2,7 +2,6 @@ package com.alukyanau.nysestocks.controller;
 
 import com.alukyanau.nysestocks.dto.StockStatistic;
 import com.alukyanau.nysestocks.service.resolving.StatisticService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,9 +16,7 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -173,7 +170,7 @@ class StockStatisticsControllerTest {
                     "min": 280.0
                   }
                 ]
-               
+                               
                 """;
         // when
         when(stockStatisticService.getStockStatistic(any(), any(Integer.class), any(Integer.class)))
