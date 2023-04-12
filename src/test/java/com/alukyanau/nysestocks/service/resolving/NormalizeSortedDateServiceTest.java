@@ -28,6 +28,7 @@ class NormalizeSortedDateServiceTest {
     private NormalizeSortedDateService normalizeSortedDateService;
 
     @Mock
+    @SuppressWarnings("unused")
     private ParameterService<RequestParameters> stockParameterService;
     @Mock
     private DataRetrievalProcessor<List<StockDataDTO>> stockDataRetrievalProcessor;
