@@ -6,11 +6,11 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;
 
 @Service
-public class StockDataDTOConverter implements Converter<StockDataDTO, StockData> {
+public class StockDataDTOConverter implements Converter<StockData, StockDataDTO> {
 
     @Override
-    public StockData convert(StockDataDTO source) {
-        return StockData.builder()
+    public StockDataDTO convert(StockData source) {
+        return StockDataDTO.builder()
                 .companyCode(source.getCompanyCode())
                 .date(source.getDate())
                 .startPrice(source.getStartPrice())

@@ -1,14 +1,21 @@
 
+### statistics getByCompany
+GET http://localhost:8080/api/v1/stocks/statistics/epam/period?startdate=04/05/2023&enddate=04/10/2023
 
-GET https://www.marketwatch.com/investing/stock/csv/downloaddatapartial?startdate=02/27/2023%2000:00:00&enddate=03/29/2023%2023:59:59&daterange=d30&frequency=p1d&csvdownload=true&downloadpartial=false&newdates=false
+### statistics getForCompanyByMonthAndYear
+GET http://localhost:8080/api/v1/stocks/statistics/epam/by?month=3&year=2023
 
+### statistics getAllByMonthAndYear
+GET http://localhost:8080/api/v1/stocks/statistics/all/by?month=3&year=2023
 
-###
-GET https://www.marketwatch.com/investing/stock/aapl/downloaddatapartial?startdate=04/06/2023%2000:00:00&enddate=04/06/2023%2023:59:59&daterange=d30&frequency=p1d&csvdownload=true&downloadpartial=false&newdates=false
+### normalized values getSortedStocksData
+GET http://localhost:8080/api/v1/stocks/normalized/range?startdate=04/05/2023&enddate=04/10/2023
 
-###
+### normalized values getSortedStocksDataForCurrentMonth
+GET http://localhost:8080/api/v1/stocks/normalized/latest
 
-GET https://www.marketwatch.com/investing/stock/aapl/downloaddatapartial?startdate=03/10/2023%2000:00:00&enddate=03/10/2023%2023:59:59&daterange=d0&frequency=p1d&csvdownload=true&downloadpartial=false&newdates=false
+### normalized values getStockWithHighestValue
+GET http://localhost:8080/api/v1/stocks/normalized/highest?date=04/10/2023
 
-###
+### NYSE example
 GET https://www.marketwatch.com/investing/stock/epam/downloaddatapartial?startdate=04/05/2023%2000:00:00&enddate=04/07/2023%2023:59:59&daterange=d2&frequency=p1d&csvdownload=true&downloadpartial=false&newdates=false

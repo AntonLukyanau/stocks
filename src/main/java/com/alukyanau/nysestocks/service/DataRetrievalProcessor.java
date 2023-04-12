@@ -1,6 +1,6 @@
 package com.alukyanau.nysestocks.service;
 
-import com.alukyanau.nysestocks.util.RequestParameters;
+import com.alukyanau.nysestocks.model.RequestParameters;
 
 public interface DataRetrievalProcessor<T> {
 

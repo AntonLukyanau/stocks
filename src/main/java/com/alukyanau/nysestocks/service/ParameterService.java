@@ -13,6 +13,7 @@ package com.alukyanau.nysestocks.service;
  *     ...
  *     parameterService.fillParameters("param1Value","param2Value","param3Value");
  * </code>
+ *
  * @param <T> Type of object which contains parameters
  */
 public interface ParameterService<T> {
