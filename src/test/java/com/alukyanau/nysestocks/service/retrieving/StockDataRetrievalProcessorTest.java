@@ -17,6 +17,7 @@ import org.springframework.core.convert.converter.Converter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,30 +40,53 @@ public class StockDataRetrievalProcessorTest {
     @Mock
     private RequestCache<RequestParameters, List<StockData>> requestCache;
 
-
     @Test
     public void testRetrievalProcessSuccess() {
         // given
-        String validData = """
-                Date,Open,High,Low,Close,Volume
-                01/01/2022,"150.0","200.0","100.0","180.0","50,000"
-                """;
         RequestParameters parameters = new RequestParameters(
                 "aapl",
                 LocalDate.of(2022, 2, 10),
                 LocalDate.of(2022, 2, 9));
 
-        List<StockDataDTO> expectedStockDataDTOS = List.of(
-                StockDataDTO.builder()
-                        .companyCode("aapl")
-                        .date(LocalDate.of(2022, 2, 9))
-                        .startPrice(BigDecimal.valueOf(150.0))
-                        .maxPrice(BigDecimal.valueOf(200.0))
-                        .minPrice(BigDecimal.valueOf(100.0))
-                        .endPrice(BigDecimal.valueOf(180.0))
-                        .volume(50000L)
-                        .build()
-        );
+        StockDataDTO stockDataDTO = StockDataDTO.builder()
+                .companyCode("aapl")
+                .date(LocalDate.of(2022, 2, 9))
+                .startPrice(BigDecimal.valueOf(150.0))
+                .maxPrice(BigDecimal.valueOf(200.0))
+                .minPrice(BigDecimal.valueOf(100.0))
+                .endPrice(BigDecimal.valueOf(180.0))
+                .volume(50000L)
+                .build();
+        List<StockDataDTO> expectedStockDataDTOS = List.of(stockDataDTO);
+        CSVStockData expectedCSV = new CSVStockData(
+                stockDataDTO.getDate(),
+                stockDataDTO.getStartPrice(),
+                stockDataDTO.getMaxPrice(),
+                stockDataDTO.getMinPrice(),
+                stockDataDTO.getEndPrice(),
+                stockDataDTO.getVolume());
+        // when
+        when(requestCache.containsKey(any())).thenReturn(false);
+        when(stockDataRetriever.retrieveData(any())).thenReturn(List.of(expectedCSV));
+        when(stockDataConverter.convert(any())).thenReturn(stockDataDTO);
+        List<StockDataDTO> result = retrievalProcessor.retrievalProcess(parameters);
+        // then
+        verify(requestCache, times(1)).containsKey(any());
+        verify(stockDataRetriever, times(1)).retrieveData(any());
+        verify(requestRepository, times(1)).save(any());
+        verify(stockRepository, times(1)).saveAll(any());
+        verify(requestCache, times(1)).store(any(), any());
+        verify(stockDataConverter, times(1)).convert(any());
+        assertEquals(expectedStockDataDTOS, result);
+    }
+
+    @Test
+    public void testRetrievalProcessSuccessFromCache() {
+        // given
+        RequestParameters parameters = new RequestParameters(
+                "aapl",
+                LocalDate.of(2022, 2, 10),
+                LocalDate.of(2022, 2, 9));
         StockData stockData = StockData.builder()
                 .companyCode("aapl")
                 .date(LocalDate.of(2022, 2, 9))
@@ -72,34 +96,42 @@ public class StockDataRetrievalProcessorTest {
                 .endPrice(BigDecimal.valueOf(180.0))
                 .volume(50000L)
                 .build();
+        StockDataDTO stockDataDTO = StockDataDTO.builder()
+                .companyCode("aapl")
+                .date(LocalDate.of(2022, 2, 9))
+                .startPrice(BigDecimal.valueOf(150.0))
+                .maxPrice(BigDecimal.valueOf(200.0))
+                .minPrice(BigDecimal.valueOf(100.0))
+                .endPrice(BigDecimal.valueOf(180.0))
+                .volume(50000L)
+                .build();
+        List<StockDataDTO> expectedStockDataDTOS = List.of(stockDataDTO);
         // when
+        when(requestCache.containsKey(any())).thenReturn(true);
+        when(requestCache.getBy(any())).thenReturn(List.of(stockData));
+        when(stockDataConverter.convert(any())).thenReturn(stockDataDTO);
+        List<StockDataDTO> result = retrievalProcessor.retrievalProcess(parameters);
         // then
+        verifyNoInteractions(stockDataRetriever, requestRepository, stockRepository);
+        assertEquals(expectedStockDataDTOS, result);
     }
 
     @Test
-    public void testRetrievalProcessFailure() {
+    public void testRetrievalProcessFailed() {
         // given
-        String invalidData = "invalid,data,here";
         RequestParameters parameters = new RequestParameters(
                 "aapl",
                 LocalDate.of(2022, 2, 10),
                 LocalDate.of(2022, 2, 9));
-
         // when
+        when(requestCache.containsKey(any())).thenReturn(false);
+        when(stockDataRetriever.retrieveData(any())).thenReturn(Collections.emptyList());
+        List<StockDataDTO> result = retrievalProcessor.retrievalProcess(parameters);
         // then
-    }
-
-    @Test
-    public void testRetrievalProcessEmptyData() {
-        // given
-        String emptyData = "";
-        RequestParameters parameters = new RequestParameters(
-                "aapl",
-                LocalDate.of(2022, 2, 10),
-                LocalDate.of(2022, 2, 9));
-
-        // when
-        // then
+        verify(requestCache, times(1)).containsKey(any());
+        verify(stockDataRetriever, times(1)).retrieveData(any());
+        verifyNoInteractions(requestRepository, stockRepository, stockDataConverter);
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -111,6 +143,6 @@ public class StockDataRetrievalProcessorTest {
         List<StockDataDTO> stockDataDTOS = retrievalProcessor.retrievalProcess(parameters);
         // then
         assertTrue(stockDataDTOS.isEmpty());
-        verifyNoInteractions(requestCache, stockDataRetriever, stockDataConverter, requestRepository);
+        verifyNoInteractions(requestCache, stockDataRetriever, stockDataConverter, requestRepository, stockRepository);
     }
 }
