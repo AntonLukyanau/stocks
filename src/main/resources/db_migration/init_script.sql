@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS request_to_nyse
+CREATE TABLE IF NOT EXISTS public.request_to_nyse
 (
     id               BIGSERIAL PRIMARY KEY,
     at_date          DATE NOT NULL,
@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS request_to_nyse
     end_date_param   DATE
 );
 
-CREATE TABLE IF NOT EXISTS stock_data
+CREATE TABLE IF NOT EXISTS public.stock_data
 (
     id               BIGSERIAL PRIMARY KEY,
     request_id       BIGINT         NOT NULL,
@@ -19,6 +19,6 @@ CREATE TABLE IF NOT EXISTS stock_data
     end_price        NUMERIC(15, 2) NOT NULL,
     volume           BIGINT         NOT NULL,
     CONSTRAINT stock_data_request_to_nyse_fk
-        FOREIGN KEY (request_id) REFERENCES request_to_nyse (id)
+        FOREIGN KEY (request_id) REFERENCES public.request_to_nyse (id)
 );
 
