@@ -20,6 +20,12 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Provide delegation to retrieve data from NYSE and implement store result of requests in the cache
+ *
+ * @see com.alukyanau.nysestocks.service.csv.CSVDataRetriever
+ * @see com.alukyanau.nysestocks.infrastructure.cache.RequestCache
+ */
 @Service
 @RequiredArgsConstructor
 @Log4j2

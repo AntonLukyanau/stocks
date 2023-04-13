@@ -15,6 +15,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Retrieve data by URL which is building by parameters {@link RequestParameters}
+ */
 @Service
 @RequiredArgsConstructor
 @Log4j2

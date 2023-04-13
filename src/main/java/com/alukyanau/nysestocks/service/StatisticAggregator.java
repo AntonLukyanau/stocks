@@ -3,7 +3,7 @@ package com.alukyanau.nysestocks.service;
 import java.util.Collection;
 
 /**
- * Service provide resolving/calculating max and min value of items characteristics
+ * Expose method for aggregation data from items collection
  *
  * @param <T> Aggregated data type
  * @param <D> Source data type

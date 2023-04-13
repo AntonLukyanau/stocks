@@ -5,6 +5,12 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+/**
+ * Implementation of LRuCache algorithm in concurrent environment
+ *
+ * @param <K> Type of key
+ * @param <V> Type of value
+ */
 class ConcurrentLRuCache<K, V> {
 
     private final ConcurrentHashMap<K, V> storage;

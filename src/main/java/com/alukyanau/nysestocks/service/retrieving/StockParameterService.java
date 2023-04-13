@@ -9,6 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
+/**
+ * Fill request parameters
+ *
+ * @see com.alukyanau.nysestocks.model.RequestParameters
+ */
 @Service
 @RequiredArgsConstructor
 public class StockParameterService implements ParameterService<RequestParameters> {

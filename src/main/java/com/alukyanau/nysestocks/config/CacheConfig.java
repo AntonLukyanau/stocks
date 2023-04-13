@@ -12,6 +12,11 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
+/**
+ * Create a cache which should contains latest successful requests to NYSE.
+ * Fill latest requests result from the database on start up the application.
+ * Started with number of latest requests less than or equal to property stocks.request.cache.size.
+ */
 @Configuration
 @Log4j2
 public class CacheConfig {
@@ -21,6 +26,9 @@ public class CacheConfig {
 
     @Bean
     public RequestCache<RequestParameters, List<StockData>> requestCache(RequestToNYSERepository requestRepository) {
+        if (cacheSize == null) {
+            throw new IllegalStateException("Cache size is unresolved! application.yml/.properties should contains property stocks.request.cache.size");
+        }
         RequestCache<RequestParameters, List<StockData>> requestCache = new RequestCache<>(cacheSize);
         List<RequestToNYSE> lastRequests = requestRepository.findLastRequests(cacheSize);
         for (RequestToNYSE request : lastRequests) {

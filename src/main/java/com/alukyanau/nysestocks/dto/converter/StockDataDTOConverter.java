@@ -5,6 +5,12 @@ import com.alukyanau.nysestocks.entity.StockData;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;
 
+/**
+ * Convert stock data to dto
+ *
+ * @see StockData
+ * @see StockDataDTO
+ */
 @Service
 public class StockDataDTOConverter implements Converter<StockData, StockDataDTO> {
 

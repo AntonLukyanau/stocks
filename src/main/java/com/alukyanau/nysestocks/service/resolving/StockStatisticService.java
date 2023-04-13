@@ -14,6 +14,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Delegate retrieve data to DataRetrievalProcessor
+ * then delegate calculation statistics to StatisticAggregator based on parameters
+ *
+ * @see com.alukyanau.nysestocks.service.retrieving.StockDataRetrievalProcessor
+ * @see com.alukyanau.nysestocks.service.resolving.StockStatisticAggregator
+ */
 @Service
 @RequiredArgsConstructor
 public class StockStatisticService implements StatisticService<StockStatistic> {

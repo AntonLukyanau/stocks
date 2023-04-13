@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Provide receiving list of NormalizedStockData by companies
+ */
 @Service
 @RequiredArgsConstructor
 public class NormalizeSortedDateService implements NormalizeDateService {

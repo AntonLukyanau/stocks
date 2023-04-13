@@ -9,6 +9,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 
+/**
+ * Calculate statistics from collection of stock data
+ */
 @Service
 public class StockStatisticAggregator implements StatisticAggregator<StockStatistic, StockDataDTO> {
 

@@ -9,7 +9,13 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class NormalizedStockData {
 
+    /**
+     * Main data about stock
+     */
     private StockDataDTO stockDataDTO;
+    /**
+     * Calculated by the formula (max-min)/min
+     */
     private BigDecimal normalizedValue;
 
 }

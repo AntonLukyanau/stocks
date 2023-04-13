@@ -28,7 +28,7 @@ class NormalizeSortedDateServiceTest {
     private NormalizeSortedDateService normalizeSortedDateService;
 
     @Mock
-    @SuppressWarnings("unused")
+    @SuppressWarnings("unused") // It should be mocked. No matter what parameters will be returned, even null
     private ParameterService<RequestParameters> stockParameterService;
     @Mock
     private DataRetrievalProcessor<List<StockDataDTO>> stockDataRetrievalProcessor;

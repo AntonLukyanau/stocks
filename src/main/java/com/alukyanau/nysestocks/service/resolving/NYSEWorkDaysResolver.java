@@ -9,6 +9,9 @@ import java.time.Month;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Set;
 
+/**
+ * Provide resolving last working day of New-York Stock Exchange. As well as checking NYSE is working in the date
+ */
 @Service("nyseWorkDaysResolver")
 public class NYSEWorkDaysResolver implements WorkDaysResolver {
 
@@ -23,8 +26,8 @@ public class NYSEWorkDaysResolver implements WorkDaysResolver {
     public boolean isNonWorkingDay(LocalDate date) {
         Set<LocalDate> holidays = getHolidays(date.getYear());
         return date.getDayOfWeek() == DayOfWeek.SUNDAY
-                || date.getDayOfWeek() == DayOfWeek.SATURDAY
-                || holidays.contains(date);
+               || date.getDayOfWeek() == DayOfWeek.SATURDAY
+               || holidays.contains(date);
     }
 
     private Set<LocalDate> getHolidays(int year) {
