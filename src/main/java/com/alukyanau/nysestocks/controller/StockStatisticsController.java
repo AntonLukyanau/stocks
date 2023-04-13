@@ -5,8 +5,11 @@ import com.alukyanau.nysestocks.service.resolving.StatisticService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,19 +35,28 @@ public class StockStatisticsController {
                     Find stocks by company for entered period.
                     Then find highest price, lowest price, start date and end date through found stocks.
                     """)
+    @ApiResponse(responseCode = "200", description = "Return all found data")
+    @ApiResponse(responseCode = "400", description = "Company not tracked")
+    @Parameter(name = "companyCode",
+            in = ParameterIn.PATH,
+            description = "Stocks will be found by this single company",
+            example = "epam",
+            required = true)
     @Parameter(name = "startdate",
+            allowEmptyValue = true,
             in = ParameterIn.QUERY,
-            description = "Stocks will be found from this date",
+            description = "Stocks will be found from this date or from last work day in case empty value",
             example = "02/15/2023")
     @Parameter(name = "enddate",
+            allowEmptyValue = true,
             in = ParameterIn.QUERY,
-            description = "Stocks will be found to this date",
+            description = "Stocks will be found to this date or to today in case empty value",
             example = "02/19/2023")
-    @GetMapping("/{companyCode}/period")
+    @GetMapping(path = "/{companyCode}/period", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StockStatistic> getByCompany(
             @PathVariable String companyCode,
-            @RequestParam("startdate") String start,
-            @RequestParam("enddate") String end
+            @Nullable @RequestParam("startdate") String start,
+            @Nullable @RequestParam("enddate") String end
     ) {
         if (companies.contains(companyCode)) {
             StockStatistic stockStatistic = stockStatisticService.getStockStatistic(companyCode, start, end);
@@ -62,24 +74,28 @@ public class StockStatisticsController {
                     Find stocks by entered year and month for specified company.
                     Then return aggregated statistics
                     """)
-    @Parameter(name = "month",
-            in = ParameterIn.QUERY,
-            description = "Stocks will be found by this month",
-            example = "4")
-    @Parameter(name = "year",
-            in = ParameterIn.QUERY,
-            description = "Stocks will be found by this year",
-            example = "2023")
+    @ApiResponse(responseCode = "200", description = "Return all found data")
+    @ApiResponse(responseCode = "400", description = "Company not tracked")
     @Parameter(name = "companyCode",
             in = ParameterIn.PATH,
-            description = "Stocks will be found by this single company. Can be equal to 'all'",
+            description = "Stocks will be found by this single company",
             example = "epam",
             required = true)
-    @GetMapping("/{companyCode}/by")
+    @Parameter(name = "month",
+            allowEmptyValue = true,
+            in = ParameterIn.QUERY,
+            description = "Stocks will be found by this month or the current month in case an empty value",
+            example = "4")
+    @Parameter(name = "year",
+            allowEmptyValue = true,
+            in = ParameterIn.QUERY,
+            description = "Stocks will be found by this year or the current year in case an empty value",
+            example = "2023")
+    @GetMapping(path = "/{companyCode}/by", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StockStatistic> getForCompanyByMonthAndYear(
             @PathVariable("companyCode") String companyCode,
-            @RequestParam("month") Integer month,
-            @RequestParam("year") Integer year
+            @Nullable @RequestParam("month") Integer month,
+            @Nullable @RequestParam("year") Integer year
     ) {
         if (companies.contains(companyCode)) {
             return ResponseEntity.ok(stockStatisticService.getStockStatistic(companyCode, month, year));
@@ -98,18 +114,21 @@ public class StockStatisticsController {
                     If year not specified return statistics for current year.
                     Aggregate statistics for each company
                     """)
+    @ApiResponse(responseCode = "200", description = "Return all found data")
     @Parameter(name = "month",
+            allowEmptyValue = true,
             in = ParameterIn.QUERY,
-            description = "Stocks will be found by this month",
+            description = "Stocks will be found by this month or the current month in case an empty value",
             example = "4")
     @Parameter(name = "year",
+            allowEmptyValue = true,
             in = ParameterIn.QUERY,
-            description = "Stocks will be found by this year",
+            description = "Stocks will be found by this year or the current year in case an empty value",
             example = "2023")
-    @GetMapping("/all/by")
+    @GetMapping(path = "/all/by", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StockStatistic>> getAllByMonthAndYear(
-            @RequestParam("month") Integer month,
-            @RequestParam("year") Integer year
+            @Nullable @RequestParam("month") Integer month,
+            @Nullable @RequestParam("year") Integer year
     ) {
         return ResponseEntity.ok(companies.stream()
                 .map(company -> stockStatisticService.getStockStatistic(company, month, year))
