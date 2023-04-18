@@ -1,7 +1,7 @@
 package com.alukyanau.nysestocks.controller;
 
 import com.alukyanau.nysestocks.dto.NormalizedStockData;
-import com.alukyanau.nysestocks.service.NormalizeDateService;
+import com.alukyanau.nysestocks.service.statistic.NormalizeDateService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

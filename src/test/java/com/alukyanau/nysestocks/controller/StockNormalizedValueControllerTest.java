@@ -2,7 +2,7 @@ package com.alukyanau.nysestocks.controller;
 
 import com.alukyanau.nysestocks.dto.NormalizedStockData;
 import com.alukyanau.nysestocks.dto.StockDataDTO;
-import com.alukyanau.nysestocks.service.NormalizeDateService;
+import com.alukyanau.nysestocks.service.statistic.NormalizeDateService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

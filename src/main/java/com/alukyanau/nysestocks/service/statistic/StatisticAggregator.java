@@ -1,4 +1,4 @@
-package com.alukyanau.nysestocks.service;
+package com.alukyanau.nysestocks.service.statistic;
 
 import java.util.Collection;
 

@@ -2,8 +2,7 @@ package com.alukyanau.nysestocks.service.retrieving;
 
 import com.alukyanau.nysestocks.infrastructure.NYSEConstants;
 import com.alukyanau.nysestocks.model.RequestParameters;
-import com.alukyanau.nysestocks.service.ParameterService;
-import com.alukyanau.nysestocks.service.WorkDaysResolver;
+import com.alukyanau.nysestocks.service.resolving.WorkDaysResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

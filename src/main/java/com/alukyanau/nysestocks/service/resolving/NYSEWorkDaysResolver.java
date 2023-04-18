@@ -1,6 +1,5 @@
 package com.alukyanau.nysestocks.service.resolving;
 
-import com.alukyanau.nysestocks.service.WorkDaysResolver;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;

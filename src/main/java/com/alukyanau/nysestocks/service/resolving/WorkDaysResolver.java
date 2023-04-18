@@ -1,4 +1,4 @@
-package com.alukyanau.nysestocks.service;
+package com.alukyanau.nysestocks.service.resolving;
 
 import java.time.LocalDate;
 

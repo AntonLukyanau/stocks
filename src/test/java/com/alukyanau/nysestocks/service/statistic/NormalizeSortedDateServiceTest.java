@@ -1,11 +1,12 @@
-package com.alukyanau.nysestocks.service.resolving;
+package com.alukyanau.nysestocks.service.statistic;
 
 import com.alukyanau.nysestocks.dto.NormalizedStockData;
 import com.alukyanau.nysestocks.dto.StockDataDTO;
 import com.alukyanau.nysestocks.model.FixedDateRange;
 import com.alukyanau.nysestocks.model.RequestParameters;
-import com.alukyanau.nysestocks.service.DataRetrievalProcessor;
-import com.alukyanau.nysestocks.service.ParameterService;
+import com.alukyanau.nysestocks.service.retrieving.DataRetrievalProcessor;
+import com.alukyanau.nysestocks.service.retrieving.ParameterService;
+import com.alukyanau.nysestocks.service.statistic.NormalizeSortedDateService;
 import com.alukyanau.nysestocks.util.DateUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

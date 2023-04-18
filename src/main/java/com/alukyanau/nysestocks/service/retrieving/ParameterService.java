@@ -1,4 +1,4 @@
-package com.alukyanau.nysestocks.service;
+package com.alukyanau.nysestocks.service.retrieving;
 
 /**
  * Provide absorbing parameters to one object which contains all of them.

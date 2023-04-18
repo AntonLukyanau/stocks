@@ -1,4 +1,4 @@
-package com.alukyanau.nysestocks.service;
+package com.alukyanau.nysestocks.service.statistic;
 
 import com.alukyanau.nysestocks.dto.NormalizedStockData;
 

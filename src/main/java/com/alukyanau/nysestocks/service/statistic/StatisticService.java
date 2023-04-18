@@ -1,4 +1,4 @@
-package com.alukyanau.nysestocks.service.resolving;
+package com.alukyanau.nysestocks.service.statistic;
 
 /**
  * Expose methods for calculating statistic about stocks

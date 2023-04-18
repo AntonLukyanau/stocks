@@ -8,7 +8,6 @@ import com.alukyanau.nysestocks.model.CSVStockData;
 import com.alukyanau.nysestocks.model.RequestParameters;
 import com.alukyanau.nysestocks.repository.RequestToNYSERepository;
 import com.alukyanau.nysestocks.repository.StockRepository;
-import com.alukyanau.nysestocks.service.DataRetrievalProcessor;
 import com.alukyanau.nysestocks.service.csv.DataRetriever;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

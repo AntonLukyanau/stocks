@@ -1,13 +1,12 @@
-package com.alukyanau.nysestocks.service.resolving;
+package com.alukyanau.nysestocks.service.statistic;
 
 import com.alukyanau.nysestocks.dto.StockDataDTO;
 import com.alukyanau.nysestocks.dto.StockStatistic;
 import com.alukyanau.nysestocks.infrastructure.NYSEConstants;
 import com.alukyanau.nysestocks.model.FixedDateRange;
 import com.alukyanau.nysestocks.model.RequestParameters;
-import com.alukyanau.nysestocks.service.DataRetrievalProcessor;
-import com.alukyanau.nysestocks.service.ParameterService;
-import com.alukyanau.nysestocks.service.StatisticAggregator;
+import com.alukyanau.nysestocks.service.retrieving.DataRetrievalProcessor;
+import com.alukyanau.nysestocks.service.retrieving.ParameterService;
 import com.alukyanau.nysestocks.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,7 @@ import java.util.List;
  * then delegate calculation statistics to StatisticAggregator based on parameters
  *
  * @see com.alukyanau.nysestocks.service.retrieving.StockDataRetrievalProcessor
- * @see com.alukyanau.nysestocks.service.resolving.StockStatisticAggregator
+ * @see StockStatisticAggregator
  */
 @Service
 @RequiredArgsConstructor

@@ -1,7 +1,7 @@
 package com.alukyanau.nysestocks.controller;
 
 import com.alukyanau.nysestocks.dto.StockStatistic;
-import com.alukyanau.nysestocks.service.resolving.StatisticService;
+import com.alukyanau.nysestocks.service.statistic.StatisticService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
