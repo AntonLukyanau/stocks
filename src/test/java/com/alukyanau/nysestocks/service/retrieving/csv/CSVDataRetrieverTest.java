@@ -1,4 +1,4 @@
-package com.alukyanau.nysestocks.service.csv;
+package com.alukyanau.nysestocks.service.retrieving.csv;
 
 import com.alukyanau.nysestocks.model.CSVStockData;
 import com.alukyanau.nysestocks.model.RequestParameters;

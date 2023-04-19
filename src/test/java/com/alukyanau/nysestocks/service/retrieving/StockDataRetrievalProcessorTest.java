@@ -7,7 +7,6 @@ import com.alukyanau.nysestocks.model.CSVStockData;
 import com.alukyanau.nysestocks.model.RequestParameters;
 import com.alukyanau.nysestocks.repository.RequestToNYSERepository;
 import com.alukyanau.nysestocks.repository.StockRepository;
-import com.alukyanau.nysestocks.service.csv.DataRetriever;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

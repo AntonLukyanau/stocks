@@ -1,7 +1,8 @@
-package com.alukyanau.nysestocks.service.csv;
+package com.alukyanau.nysestocks.service.retrieving.csv;
 
 import com.alukyanau.nysestocks.model.CSVStockData;
 import com.alukyanau.nysestocks.model.RequestParameters;
+import com.alukyanau.nysestocks.service.retrieving.DataRetriever;
 import com.alukyanau.nysestocks.util.URLUtil;
 import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.RequiredArgsConstructor;

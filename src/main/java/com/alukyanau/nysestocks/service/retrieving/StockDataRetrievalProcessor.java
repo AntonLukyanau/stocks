@@ -8,7 +8,6 @@ import com.alukyanau.nysestocks.model.CSVStockData;
 import com.alukyanau.nysestocks.model.RequestParameters;
 import com.alukyanau.nysestocks.repository.RequestToNYSERepository;
 import com.alukyanau.nysestocks.repository.StockRepository;
-import com.alukyanau.nysestocks.service.csv.DataRetriever;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.convert.converter.Converter;
@@ -22,7 +21,7 @@ import java.util.List;
 /**
  * Provide delegation to retrieve data from NYSE and implement store result of requests in the cache
  *
- * @see com.alukyanau.nysestocks.service.csv.CSVDataRetriever
+ * @see com.alukyanau.nysestocks.service.retrieving.csv.CSVDataRetriever
  * @see com.alukyanau.nysestocks.infrastructure.cache.RequestCache
  */
 @Service
